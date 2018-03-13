@@ -5,30 +5,24 @@ import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileReader;
-import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.StringWriter;
 import java.io.Writer;
-import java.net.InetAddress;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Date;
 import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.filefilter.AgeFileFilter;
 import org.apache.commons.io.IOUtils;
-
 import org.apache.log4j.Logger;
 
 public class IO_Utils {
@@ -73,7 +67,6 @@ public class IO_Utils {
 	 *             the interrupted exception
 	 */
 	public String fileToString(String filePath) throws IOException {
-
 		Path p = Paths.get(filePath);
 		byte[] raw = Files.readAllBytes(p);
 		String data = new String(raw);
@@ -112,14 +105,12 @@ public class IO_Utils {
 	/**
 	 * Check if a file is empty
 	 * 
-	 * @param pathToFile
-	 *            - the absolute path to the file
+	 * @param pathToFile: the absolute path to the file
 	 * @return
 	 */
 	public boolean isFileEmpty(String pathToFile) {
 		boolean isEmpty = false;
 		BufferedReader br = null;
-
 		if (!fileExists(pathToFile)) {
 			return true;
 		}
@@ -141,9 +132,7 @@ public class IO_Utils {
 				}
 			} catch (Exception e) {
 			}
-
 		}
-
 		return isEmpty;
 	}
 
@@ -263,213 +252,6 @@ public class IO_Utils {
 		zipIn.close();
 	}
 
-	/**
-	 * Given the age in hours, it will delete all files and folders older than the
-	 * given ageInHours
-	 * 
-	 * @param directoryName
-	 * @param ageInHours
-	 */
-	public void deleteOldFilesAndFolders(String directoryName, int ageInHours, String excludeThisFileOrFolder) {
-		long cutoff = System.currentTimeMillis() - (ageInHours * 60 * 60 * 1000);
-		String fileToExclude = excludeThisFileOrFolder.trim();
-
-		try {
-			FilenameFilter filter = new AgeFileFilter(cutoff);
-			File directory = new File(directoryName);
-			if (directory.exists()) {
-				File[] fList = directory.listFiles(filter);
-				if (fList.length == 0) {
-					log.debug("No files/folders older than: " + new Date(cutoff));
-				}
-				for (File file : fList) {
-					log.debug(file.getName());
-					if (fileToExclude.isEmpty()) {
-						log.debug("Attempting to delete: " + file.getAbsolutePath());
-						FileUtils.forceDelete(file);
-						continue;
-					}
-					if (!file.getName().contains(fileToExclude)) {
-						log.debug("Attempting to delete: " + file.getAbsolutePath());
-						FileUtils.forceDelete(file);
-						continue;
-					}
-					if (file.getName().contains(fileToExclude)) {
-						log.debug("Nothing to delete since we're excluding: " + fileToExclude);
-						continue;
-					}
-				}
-			} else {
-				log.debug("File/Directory does not exist: " + directory.getAbsolutePath());
-			}
-		} catch (Exception e) {
-			log.error(e.getMessage(), e);
-		}
-	}
-
-	/**
-	 * Will delete files which are older than a specified time-frame and have a
-	 * specific extension
-	 * 
-	 * @param directoryName
-	 * @param ageInHours
-	 * @param fileExtension
-	 *            should be in the form of .ext (.txt, .png, etc).
-	 * @throws Exception
-	 *             if fileExtension is empty or null
-	 */
-	public void deleteOldFiles(String directoryName, int ageInHours, String fileExtension) throws Exception {
-		long cutoff = System.currentTimeMillis() - (ageInHours * 60 * 60 * 1000);
-		if (fileExtension == null) {
-			fileExtension = "";
-		}
-		String ext = fileExtension.trim();
-
-		try {
-			if (ext.isEmpty()) {
-				throw new Exception("You must include a non-emtpy value for extension");
-			}
-			log.debug("Files in this folder (" + directoryName + ") with extension (" + ext + ") and older than "
-					+ ageInHours + " hours will be deleted");
-			FilenameFilter filter = new AgeFileFilter(cutoff);
-			File directory = new File(directoryName);
-			if (directory.exists()) {
-				File[] fList = directory.listFiles(filter);
-				if (fList.length == 0) {
-					log.debug("No files/folders older than: " + new Date(cutoff));
-				}
-				for (File file : fList) {
-					if (file.getName().endsWith(ext)) {
-						log.debug("Attempting to delete: " + file.getAbsolutePath());
-						FileUtils.forceDelete(file);
-						continue;
-					}
-				}
-			} else {
-				log.debug("File/Directory does not exist: " + directory.getAbsolutePath());
-			}
-		} catch (Exception e) {
-			log.error(e.getMessage(), e);
-			throw new Exception(e);
-		}
-	}
-
-	/**
-	 * Using DNS lookup, it will validate myHost against an array of cNames and
-	 * return true/false if myHost is address to which one of the cNames points
-	 * 
-	 * @param myHost:
-	 *            myhost.corp.yahoo.com
-	 * @param prodCNames:
-	 *            array of cName like holodeck.load.yahoo.com,
-	 *            holodeck.stress.yahoo.com, etc
-	 * @return true if ANY of the cNames in the array list point to myHost
-	 */
-	public boolean isPrimary(String myHost, String[] prodCNames) {
-		boolean primary = false;
-		prodCheck: for (int i = 0; i < prodCNames.length; i++) {
-			InetAddress[] inetAddressArray;
-			try {
-				inetAddressArray = InetAddress.getAllByName(prodCNames[i]);
-				for (int x = 0; x < inetAddressArray.length; x++) {
-					if (myHost.equals(inetAddressArray[x].getCanonicalHostName())) {
-						primary = true;
-						break prodCheck;
-					}
-				}
-			} catch (Exception e) {
-				log.error(e.getMessage(), e);
-			}
-		}
-		return primary;
-	}
-
-	/**
-	 * Using DNS lookup, it will validate myHost against an array of cNames and
-	 * return prod CName if myHost is address to which one of the cNames points
-	 * 
-	 * @param myHost:
-	 *            myhost.corp.yahoo.com
-	 * @param prodCNames:
-	 *            array of cName like holodeck.load.yahoo.com,
-	 *            holodeck.stress.yahoo.com, etc
-	 * @return prod CName if there is a match, otherwise return myHost
-	 */
-	public String getProdCName(String myHost, String[] prodCNames) {
-		String prodCName = null;
-
-		prodCheck: for (int i = 0; i < prodCNames.length; i++) {
-			InetAddress[] inetAddressArray;
-			try {
-				inetAddressArray = InetAddress.getAllByName(prodCNames[i]);
-				for (int x = 0; x < inetAddressArray.length; x++) {
-					if (myHost.equals(inetAddressArray[x].getCanonicalHostName())) {
-						prodCName = prodCNames[i];
-						break prodCheck;
-					}
-				}
-			} catch (Exception e) {
-				log.error(e.getMessage(), e);
-			}
-		}
-
-		// if we cannot find prodCName, just return my host name
-		if (prodCName == null) {
-			prodCName = myHost;
-		}
-
-		return prodCName;
-	}
-
-	/**
-	 * Given the filePath, it will sue Apache.FileUtils to forceDelete the file If
-	 * you pass it a folder, it will delete the files under the folder and the
-	 * folder itself
-	 * 
-	 * If you only want to delete the contents of a folder, use cleanFolder method
-	 * instead
-	 * 
-	 * @param filePath
-	 *            complete path to file to be deleted
-	 * @return true if successful
-	 */
-	public boolean deleteFile(String filePath) {
-		boolean deleted = false;
-
-		File fileToDelete = new File(filePath);
-		try {
-			FileUtils.forceDelete(fileToDelete);
-			deleted = true;
-		} catch (FileNotFoundException fe) {
-			log.info("File (" + filePath + ") does not exist. Nothing to delete.");
-		} catch (Exception e) {
-			log.error(e.getMessage(), e);
-		}
-		return deleted;
-	}
-
-	/**
-	 * Given a folder path, it will delete all of its contents. Unlike deleteFile,
-	 * it will NOT delete the folder itself
-	 * 
-	 * @param folderPath
-	 * @return true if succesful.
-	 */
-	public boolean cleanFolder(String folderPath) {
-		boolean deleted = false;
-
-		File folderToDelete = new File(folderPath);
-		try {
-			FileUtils.cleanDirectory(folderToDelete);
-			deleted = true;
-		} catch (FileNotFoundException fe) {
-			log.info("Folder (" + folderPath + ") does not exist. Nothing to delete.");
-		} catch (Exception e) {
-			log.error(e.getMessage(), e);
-		}
-		return deleted;
-	}
-
 	public boolean saveInputToFileFile(InputStream stream, String filePath) {
 		if (stream == null || filePath == null) {
 			return false;
@@ -494,5 +276,4 @@ public class IO_Utils {
 			return false;
 		}
 	}
-
 }
