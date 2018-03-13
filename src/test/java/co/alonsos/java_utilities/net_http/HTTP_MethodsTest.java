@@ -14,20 +14,21 @@ import org.junit.Assert;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-public class HTTP_PostTest {
-	private static Logger log = Logger.getLogger(HTTP_PostTest.class);
+public class HTTP_MethodsTest {
+	private static Logger log = Logger.getLogger(HTTP_MethodsTest.class);
 	int timeout = 5000;
-	String testUrl = "https://httpbin.org/post";
+	String testUrlPost = "https://httpbin.org/post";
+	String testUrlGet = "https://httpbin.org/get";
 	String expHeader = "Token";
 	String expHeaderValue = "Newtokenvalue";
 	String bodyKey = "foo";
 	String bodyValue = "bar";
-	HTTP_Post post = null;
+	HTTP_Methods post = null;
 	JSONObject jsonRes = null;
 	
 	@BeforeEach
 	public void setup() {
-		post = new HTTP_Post(timeout, timeout);
+		post = new HTTP_Methods(timeout, timeout);
 	}
 	
 	/*
@@ -35,7 +36,7 @@ public class HTTP_PostTest {
 	 */
 	@Test
 	public void testPost() throws Exception{
-		Entry<CloseableHttpResponse, String> response = post.execPOST(testUrl, null, null, timeout);
+		Entry<CloseableHttpResponse, String> response = post.execPOST(testUrlPost, null, null, timeout);
 		Assert.assertEquals(response.getKey().getStatusLine().getStatusCode(), 200);
 	}
 	
@@ -47,7 +48,7 @@ public class HTTP_PostTest {
 		Map<String, String> headers = new HashMap<String, String>();
 		headers.put(expHeader, expHeaderValue);
 		
-		Entry<CloseableHttpResponse, String> response = post.execPOST(testUrl, headers, null, timeout);
+		Entry<CloseableHttpResponse, String> response = post.execPOST(testUrlPost, headers, null, timeout);
 		Assert.assertEquals(200, response.getKey().getStatusLine().getStatusCode());
 		jsonRes = new JSONObject(response.getValue());
 		Assert.assertEquals(expHeaderValue, jsonRes.getJSONObject("headers").get(expHeader));
@@ -62,7 +63,7 @@ public class HTTP_PostTest {
 		headers.put(expHeader, expHeaderValue);
 		headers.put(expHeaderValue, expHeader);
 		
-		Entry<CloseableHttpResponse, String> response = post.execPOST(testUrl, headers, null, timeout);
+		Entry<CloseableHttpResponse, String> response = post.execPOST(testUrlPost, headers, null, timeout);
 		Assert.assertEquals(200, response.getKey().getStatusLine().getStatusCode());
 		jsonRes = new JSONObject(response.getValue());
 		Assert.assertEquals(expHeaderValue, jsonRes.getJSONObject("headers").get(expHeader));
@@ -77,7 +78,7 @@ public class HTTP_PostTest {
 		MultipartEntityBuilder body = MultipartEntityBuilder.create();
 		body.addPart(bodyKey, new StringBody(bodyValue, ContentType.DEFAULT_TEXT));
 		
-		Entry<CloseableHttpResponse, String> response = post.execPOST(testUrl, null, body.build(), timeout);
+		Entry<CloseableHttpResponse, String> response = post.execPOST(testUrlPost, null, body.build(), timeout);
 		Assert.assertEquals(200, response.getKey().getStatusLine().getStatusCode());
 		jsonRes = new JSONObject(response.getValue());
 		Assert.assertEquals(bodyValue, jsonRes.getJSONObject("form").get(bodyKey));
@@ -95,11 +96,74 @@ public class HTTP_PostTest {
 		MultipartEntityBuilder body = MultipartEntityBuilder.create();
 		body.addPart(bodyKey, new StringBody(bodyValue, ContentType.DEFAULT_TEXT));
 		
-		Entry<CloseableHttpResponse, String> response = post.execPOST(testUrl, headers, body.build(), timeout);
+		Entry<CloseableHttpResponse, String> response = post.execPOST(testUrlPost, headers, body.build(), timeout);
 		Assert.assertEquals(200, response.getKey().getStatusLine().getStatusCode());
 		jsonRes = new JSONObject(response.getValue());
 		Assert.assertEquals(bodyValue, jsonRes.getJSONObject("form").get(bodyKey));
 		Assert.assertEquals(expHeaderValue, jsonRes.getJSONObject("headers").get(expHeader));
 		Assert.assertEquals(expHeader, jsonRes.getJSONObject("headers").get(expHeaderValue));
+	}
+	
+	/*
+	 * Test POST with arguments
+	 */
+	@Test
+	public void testPostAPIArgs() throws Exception{
+		String url = testUrlPost + "?arg=value";
+		Entry<CloseableHttpResponse, String> response = post.execPOST(url, null, null, timeout);
+		Assert.assertEquals(200, response.getKey().getStatusLine().getStatusCode());
+		jsonRes = new JSONObject(response.getValue());
+		Assert.assertEquals("value", jsonRes.getJSONObject("args").get("arg"));
+	}
+	
+	/*
+	 * Simple GET Test
+	 */
+	@Test
+	public void testGet() throws Exception{
+		Entry<CloseableHttpResponse, String> response = post.execGET(testUrlGet, null, null);
+		Assert.assertEquals(response.getKey().getStatusLine().getStatusCode(), 200);
+	}
+	
+	/*
+	 * Test GET and setting a header
+	 */
+	@Test
+	public void testGeWithHeadert() throws Exception{
+		Map<String, String> headers = new HashMap<String, String>();
+		headers.put(expHeader, expHeaderValue);
+		
+		Entry<CloseableHttpResponse, String> response = post.execGET(testUrlGet, headers, null);
+		Assert.assertEquals(200, response.getKey().getStatusLine().getStatusCode());
+		jsonRes = new JSONObject(response.getValue());
+		Assert.assertEquals(expHeaderValue, jsonRes.getJSONObject("headers").get(expHeader));
+	}
+	
+	/*
+	 * Test GET and multiple headers
+	 */
+	@Test
+	public void testGetWithHeaders() throws Exception{
+		Map<String, String> headers = new HashMap<String, String>();
+		headers.put(expHeader, expHeaderValue);
+		headers.put(expHeaderValue, expHeader);
+		
+		Entry<CloseableHttpResponse, String> response = post.execGET(testUrlGet, headers, null);
+		Assert.assertEquals(200, response.getKey().getStatusLine().getStatusCode());
+		jsonRes = new JSONObject(response.getValue());
+		Assert.assertEquals(expHeaderValue, jsonRes.getJSONObject("headers").get(expHeader));
+		Assert.assertEquals(expHeader, jsonRes.getJSONObject("headers").get(expHeaderValue));
+	}
+	
+	/*
+	 * Test GET and query parms in the call
+	 */
+	@Test
+	public void testGetAPIParams() throws Exception{
+		String url = testUrlGet + "?arg=value";
+		Entry<CloseableHttpResponse, String> response = post.execGET(url, null, null);
+		Assert.assertEquals(response.getKey().getStatusLine().getStatusCode(), 200);
+		jsonRes = new JSONObject(response.getValue());
+		Assert.assertEquals("value", jsonRes.getJSONObject("args").get("arg"));
 	}
 }

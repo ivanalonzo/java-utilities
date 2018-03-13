@@ -16,6 +16,7 @@ import javax.net.ssl.X509TrustManager;
 import org.apache.http.HttpEntity;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
 import org.apache.http.conn.ssl.SSLSocketFactory;
@@ -28,14 +29,14 @@ import org.apache.log4j.Logger;
 import co.alonsos.java_utilities.io.IO_Utils;
 
 @SuppressWarnings("deprecation")
-public class HTTP_Post {
+public class HTTP_Methods {
 
-	private static Logger log = Logger.getLogger(HTTP_Post.class);
+	private static Logger log = Logger.getLogger(HTTP_Methods.class);
 	private IO_Utils fileio = new IO_Utils();
 
 	RequestConfig timeOutConfig;
 
-	public HTTP_Post(int conTimeout, int sockTiemeout) {
+	public HTTP_Methods(int conTimeout, int sockTiemeout) {
 		timeOutConfig = RequestConfig.custom().setSocketTimeout(sockTiemeout).setConnectTimeout(conTimeout).build();
 	}
 
@@ -86,6 +87,52 @@ public class HTTP_Post {
 		}
 	}
 
+	private interface ResponseDataCollector<T> {
+		// Process results.
+		public void collectData(CloseableHttpResponse response);
+
+		// Fetches it.
+		public T getData();
+	}
+	
+	@SuppressWarnings("unused")
+	public Entry<CloseableHttpResponse, String> execGET(String addr, Map<String, String> headers, Integer timeout) throws Exception {
+
+		CloseableHttpClient httpclient = null;
+		String response = "";
+
+		httpclient = newHTTPClient(addr);
+		HttpGet httpget = new HttpGet(returnWithProtocol(addr));
+		// Timeout configuration.
+		if (timeout == null) {
+			httpget.setConfig(timeOutConfig);
+		} else {
+			RequestConfig newTimeOutConfig = RequestConfig.custom().setSocketTimeout(timeout).setConnectTimeout(timeout)
+					.build();
+			httpget.setConfig(newTimeOutConfig);
+		}
+		// Headers
+		if (headers != null) {
+			for (String key : headers.keySet()) {
+				httpget.addHeader(key, headers.get(key));
+			}
+		}
+
+		CloseableHttpResponse reply = httpclient.execute(httpget);
+
+		// Listen to response.
+		HttpEntity resEntity = reply.getEntity();
+		InputStream replyStream = resEntity.getContent();
+		response = fileio.StreamToString(replyStream);
+		log.debug("Response from (" + httpget.getURI() + ") : " + reply.getStatusLine().getStatusCode());
+
+		// Cleanup.
+		EntityUtils.consume(resEntity);
+		reply.close();
+		httpclient.close();
+		return new AbstractMap.SimpleEntry<CloseableHttpResponse, String>(reply, response);
+	}
+	
 	/**
 	 * Uses a Closeable HTTP Client to execute an HTTP POST Method
 	 * @param addr: In the form of http/s://some.url.com/path
@@ -139,5 +186,4 @@ public class HTTP_Post {
 		httpclient.close();
 
 		return new AbstractMap.SimpleEntry<CloseableHttpResponse, String>(reply, response);
-	}
-}
+	}}
