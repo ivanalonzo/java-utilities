@@ -3,7 +3,6 @@ package co.alonsos.java_utilities.net_http;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
-
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.entity.ContentType;
 import org.apache.http.entity.mime.MultipartEntityBuilder;
@@ -23,12 +22,12 @@ public class HTTP_MethodsTest {
 	String expHeaderValue = "Newtokenvalue";
 	String bodyKey = "foo";
 	String bodyValue = "bar";
-	HTTP_Methods post = null;
+	HTTP_Methods http = null;
 	JSONObject jsonRes = null;
 	
 	@BeforeEach
 	public void setup() {
-		post = new HTTP_Methods(timeout, timeout);
+		http = new HTTP_Methods(timeout, timeout);
 	}
 	
 	/*
@@ -36,7 +35,7 @@ public class HTTP_MethodsTest {
 	 */
 	@Test
 	public void testPost() throws Exception{
-		Entry<CloseableHttpResponse, String> response = post.execPOST(testUrlPost, null, null, timeout);
+		Entry<CloseableHttpResponse, String> response = http.execPOST(testUrlPost, null, null, timeout);
 		Assert.assertEquals(response.getKey().getStatusLine().getStatusCode(), 200);
 	}
 	
@@ -48,7 +47,7 @@ public class HTTP_MethodsTest {
 		Map<String, String> headers = new HashMap<String, String>();
 		headers.put(expHeader, expHeaderValue);
 		
-		Entry<CloseableHttpResponse, String> response = post.execPOST(testUrlPost, headers, null, timeout);
+		Entry<CloseableHttpResponse, String> response = http.execPOST(testUrlPost, headers, null, timeout);
 		Assert.assertEquals(200, response.getKey().getStatusLine().getStatusCode());
 		jsonRes = new JSONObject(response.getValue());
 		Assert.assertEquals(expHeaderValue, jsonRes.getJSONObject("headers").get(expHeader));
@@ -63,7 +62,7 @@ public class HTTP_MethodsTest {
 		headers.put(expHeader, expHeaderValue);
 		headers.put(expHeaderValue, expHeader);
 		
-		Entry<CloseableHttpResponse, String> response = post.execPOST(testUrlPost, headers, null, timeout);
+		Entry<CloseableHttpResponse, String> response = http.execPOST(testUrlPost, headers, null, timeout);
 		Assert.assertEquals(200, response.getKey().getStatusLine().getStatusCode());
 		jsonRes = new JSONObject(response.getValue());
 		Assert.assertEquals(expHeaderValue, jsonRes.getJSONObject("headers").get(expHeader));
@@ -78,7 +77,7 @@ public class HTTP_MethodsTest {
 		MultipartEntityBuilder body = MultipartEntityBuilder.create();
 		body.addPart(bodyKey, new StringBody(bodyValue, ContentType.DEFAULT_TEXT));
 		
-		Entry<CloseableHttpResponse, String> response = post.execPOST(testUrlPost, null, body.build(), timeout);
+		Entry<CloseableHttpResponse, String> response = http.execPOST(testUrlPost, null, body.build(), timeout);
 		Assert.assertEquals(200, response.getKey().getStatusLine().getStatusCode());
 		jsonRes = new JSONObject(response.getValue());
 		Assert.assertEquals(bodyValue, jsonRes.getJSONObject("form").get(bodyKey));
@@ -96,7 +95,7 @@ public class HTTP_MethodsTest {
 		MultipartEntityBuilder body = MultipartEntityBuilder.create();
 		body.addPart(bodyKey, new StringBody(bodyValue, ContentType.DEFAULT_TEXT));
 		
-		Entry<CloseableHttpResponse, String> response = post.execPOST(testUrlPost, headers, body.build(), timeout);
+		Entry<CloseableHttpResponse, String> response = http.execPOST(testUrlPost, headers, body.build(), timeout);
 		Assert.assertEquals(200, response.getKey().getStatusLine().getStatusCode());
 		jsonRes = new JSONObject(response.getValue());
 		Assert.assertEquals(bodyValue, jsonRes.getJSONObject("form").get(bodyKey));
@@ -110,7 +109,7 @@ public class HTTP_MethodsTest {
 	@Test
 	public void testPostAPIArgs() throws Exception{
 		String url = testUrlPost + "?arg=value";
-		Entry<CloseableHttpResponse, String> response = post.execPOST(url, null, null, timeout);
+		Entry<CloseableHttpResponse, String> response = http.execPOST(url, null, null, timeout);
 		Assert.assertEquals(200, response.getKey().getStatusLine().getStatusCode());
 		jsonRes = new JSONObject(response.getValue());
 		Assert.assertEquals("value", jsonRes.getJSONObject("args").get("arg"));
@@ -121,7 +120,7 @@ public class HTTP_MethodsTest {
 	 */
 	@Test
 	public void testGet() throws Exception{
-		Entry<CloseableHttpResponse, String> response = post.execGET(testUrlGet, null, null);
+		Entry<CloseableHttpResponse, String> response = http.execGET(testUrlGet, null, null);
 		Assert.assertEquals(response.getKey().getStatusLine().getStatusCode(), 200);
 	}
 	
@@ -133,7 +132,7 @@ public class HTTP_MethodsTest {
 		Map<String, String> headers = new HashMap<String, String>();
 		headers.put(expHeader, expHeaderValue);
 		
-		Entry<CloseableHttpResponse, String> response = post.execGET(testUrlGet, headers, null);
+		Entry<CloseableHttpResponse, String> response = http.execGET(testUrlGet, headers, null);
 		Assert.assertEquals(200, response.getKey().getStatusLine().getStatusCode());
 		jsonRes = new JSONObject(response.getValue());
 		Assert.assertEquals(expHeaderValue, jsonRes.getJSONObject("headers").get(expHeader));
@@ -148,7 +147,7 @@ public class HTTP_MethodsTest {
 		headers.put(expHeader, expHeaderValue);
 		headers.put(expHeaderValue, expHeader);
 		
-		Entry<CloseableHttpResponse, String> response = post.execGET(testUrlGet, headers, null);
+		Entry<CloseableHttpResponse, String> response = http.execGET(testUrlGet, headers, null);
 		Assert.assertEquals(200, response.getKey().getStatusLine().getStatusCode());
 		jsonRes = new JSONObject(response.getValue());
 		Assert.assertEquals(expHeaderValue, jsonRes.getJSONObject("headers").get(expHeader));
@@ -161,7 +160,7 @@ public class HTTP_MethodsTest {
 	@Test
 	public void testGetAPIParams() throws Exception{
 		String url = testUrlGet + "?arg=value";
-		Entry<CloseableHttpResponse, String> response = post.execGET(url, null, null);
+		Entry<CloseableHttpResponse, String> response = http.execGET(url, null, null);
 		Assert.assertEquals(response.getKey().getStatusLine().getStatusCode(), 200);
 		jsonRes = new JSONObject(response.getValue());
 		Assert.assertEquals("value", jsonRes.getJSONObject("args").get("arg"));
