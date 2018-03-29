@@ -52,7 +52,7 @@ public class S_Response {
 		}else {
 			res.status_msg = msg;
 		}
-		if (code < 400 || code > 400) {
+		if (code < 400 && code > 400) {
 			res.status_code = 400;
 		}
 		if (data != null) {
