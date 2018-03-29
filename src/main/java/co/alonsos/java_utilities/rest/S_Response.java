@@ -1,153 +1,69 @@
 package co.alonsos.java_utilities.rest;
 
 import javax.ws.rs.core.Response;
-import javax.ws.rs.core.StreamingOutput;
+import org.apache.log4j.Logger;
 import com.google.gson.Gson;
 
-/**
- * This is a container object to hold varying types of JSON response information.
- * 
- * @author ivana
- */
 public class S_Response {
+	Gson gson = new Gson();
+	private static Logger log = Logger.getLogger(S_Response.class);
 
-	protected int httpcode;
-	protected String message;
-	protected Object data;
-
-	// private static Gson gson = new
-	// GsonBuilder().excludeFieldsWithModifiers(Modifier.PRIVATE).create();
-	private static Gson gson = new Gson();
 
 	/**
-	 * Not for outside use.
-	 */
-	private S_Response(int httpCode, String message, Object data) {
-		this.httpcode = httpCode;
-		this.message = message;
-		this.data = data;
-	}
-
-	/**
-	 * Not for outside use.
-	 */
-	@SuppressWarnings("unused")
-	private Response toResponse() {
-		return Response.status(this.httpcode).entity(gson.toJson(this)).build();
-	}
-
-	/**
-	 * HTTP 200 response.
+	 * Generates a javax Response object.
 	 * 
-	 * @param msg
-	 *            string message, recommended.
-	 * @param data
-	 *            converted to JSON data, not required.
-	 * @return the response
-	 */
-	public static Response makeOKResponse(String msg, Object data) {
-		S_Response resp = new S_Response(ResponseConstants.HTTP_OK, msg, data);
-		return resp.toResponse();
-	}
-
-	/**
-	 * Will set the response to 200 and message as OK
-	 * 
+	 * @param msg:
+	 *            If null, will use OK
+	 * @param data:
+	 *            Can be null
 	 * @return
 	 */
-	public static Response makeOKResponse() {
-		return makeOKResponse(ResponseConstants.MSG_SUCCESS, null);
+	public Response makeOK(String msg, Object data) {
+		ResObject res = new ResObject();
+		res.status_code = 200;
+		if (msg == null || msg.isEmpty()) {
+			res.status_msg = "OK";
+		}else {
+			res.status_msg = msg;
+		}
+
+		if (data != null) {
+			res.data = data;
+		}
+		return Response.ok(gson.toJson(res)).build();
 	}
 
 	/**
-	 * Will set the response to 200 and message to the input
+	 * Generates an exception javax Response object
 	 * 
-	 * @param msg
+	 * @param msg:
+	 *            if null, it will use "Exception" in the message
+	 * @param code:
+	 *            Code must be in the 400 range. If not, it will default to 400
+	 * @param data:
+	 *            can be null
 	 * @return
 	 */
-	public static Response makeOKResponse(String msg) {
-		return makeOKResponse(msg, null);
+	public Response makeException(String msg, int code, Object data) {
+		ResObject res = new ResObject();
+		res.status_code = code;
+		if (msg == null || msg.isEmpty()) {
+			res.status_msg = "Exception";
+		}else {
+			res.status_msg = msg;
+		}
+		if (code < 400 || code > 400) {
+			res.status_code = 400;
+		}
+		if (data != null) {
+			res.data = data;
+		}
+		return Response.status(res.status_code).entity(gson.toJson(res)).build();
 	}
 
-	public static Response makeOKResponse(Object data) {
-		return makeOKResponse(ResponseConstants.MSG_SUCCESS, data);
-	}
-
-	/**
-	 * HTTP 400 response.
-	 * 
-	 * @param msg
-	 *            string message, recommended.
-	 * @param data
-	 *            converted to JSON data, not required.
-	 * @return the response
-	 */
-	public static Response makeExceptionResponse(String msg, Object data) {
-		S_Response resp = new S_Response(ResponseConstants.HTTP_ERROR, msg, data);
-		return resp.toResponse();
-	}
-
-	/**
-	 * Will set the response to 400 with the message to the input
-	 * 
-	 * @param msg
-	 * @return
-	 */
-	public static Response makeExceptionResponse(String msg) {
-		return makeExceptionResponse(msg, null);
-	}
-
-	/**
-	 * HTTP 412 response.
-	 * 
-	 * @param msg
-	 *            string message, recommended.
-	 * @param data
-	 *            converted to JSON data, not required.
-	 * @return the response
-	 */
-	public static Response makeBadParamResponse(String msg, Object data) {
-		S_Response resp = new S_Response(ResponseConstants.HTTP_BAD_PARAM, msg, data);
-		return resp.toResponse();
-	}
-
-	/**
-	 * Will set the response code to 412 and the message to the input
-	 * 
-	 * @param msg
-	 * @return
-	 */
-	public static Response makeBadParamResponse(String msg) {
-		return makeBadParamResponse(msg, null);
-	}
-
-	/**
-	 * Serves a file.
-	 * 
-	 * @param filepath
-	 *            the filepath.
-	 * @return the response
-	 * @throws Exception
-	 *             the exception
-	 */
-	public static Response makeBinaryResponse(StreamingOutput out) throws Exception {
-
-		return Response.status(ResponseConstants.HTTP_OK).entity(out).build();
-	}
-
-	/**
-	 * Make response
-	 * 
-	 * @param statusCode
-	 * @param msg
-	 * @param data
-	 *            converted to JSON data, not required.
-	 * @return Response
-	 * @throws Exception
-	 */
-	public static Response makeResponse(int statusCode, String msg, Object data) throws Exception {
-		S_Response resp = new S_Response(statusCode, msg, data);
-		return resp.toResponse();
+	class ResObject {
+		int status_code;
+		String status_msg;
+		Object data;
 	}
 }
-
