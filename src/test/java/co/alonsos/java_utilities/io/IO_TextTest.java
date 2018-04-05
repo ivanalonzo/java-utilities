@@ -90,4 +90,25 @@ public class IO_TextTest {
 		Assert.assertEquals("", text.stringArrayToParagraph(input));
 	}
 
+	@Test
+	public void convertArrayToParagraphWithMax() throws Exception {
+		String[] sentences = {
+		        "EAST WENATCHEE,  Washington  - Hands on the   wheel, eyes squinting against the winter sun, Lauren Miehe eases his Land Rover down the main drag and tells me how he used to spot promising sites to build a bitcoin mine, back in 2013, when he was a freshly arrived techie from Seattle and had just discovered this sleepy rural community.",
+		        "Bitcoin mining - the complex process in which computers solve a complicated math puzzle to win a stack of virtual currency - uses an inordinate amount of electricity, and thanks to five hydroelectric dams that straddle this stretch of the river, about three hours east of Seattle, miners could buy that power more cheaply here than anywhere else in the nation.",
+		        "Long before locals had even heard the words \"cryptocurrency\" or \"blockchain,\" Miehe and his peers realized that this semi-arid agricultural region known as the Mid-Columbia Basin was the best place to mine bitcoin in America - and maybe the world.",
+		        "Outsiders are so eager to turn the basin's power into cryptocurrency that this winter, several would-be miners from Asia flew their private jet into the local airport, took a rental car to one of the local dams, and, according to a utility official, politely informed staff at the dam visitors center, \"We want to see the dam master because we want to buy some electricity.\""
+		};
+		String expected = "EAST WENATCHEE,  Washington  - Hands on the   wheel, eyes squinting against the winter sun, Lauren Miehe eases his Land Rover down the main drag and tells me how he used to spot promising sites to build a bitcoin mine, back in 2013, when he was a freshly arrived techie from Seattle and had just discovered this sleepy rural community.\n\n"
+		        + "Bitcoin mining - the complex process in which computers solve a complicated math puzzle to win a stack of virtual currency - uses an inordinate amount of electricity, and thanks to five hydroelectric dams that straddle this stretch of the river, about three hours east of Seattle, miners could buy that power more cheaply here than anywhere else in the nation.\n\n";
+
+		String converted = text.stringArrayToParagraph(sentences, 2);
+		Assert.assertEquals(expected, converted);
+	}
+
+	@Test
+	public void convertArrayToParagraphWithZeroMax() {
+		Assert.assertEquals("", text.stringArrayToParagraph(null, 0));
+		String[] input = {};
+		Assert.assertEquals("", text.stringArrayToParagraph(input, 0));
+	}
 }

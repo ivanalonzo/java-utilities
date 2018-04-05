@@ -60,6 +60,13 @@ public class IO_Text {
 		return clean.trim();
 	}
 
+	/**
+	 * Simple method which uses StrigTokenizer to count the number of words in the given input file
+	 * 
+	 * @param inputTextOrFilePath you can pass either a path to a file or a string itself
+	 * @return
+	 * @throws Exception
+	 */
 	public int wordCount (String inputTextOrFilePath)throws Exception{
 		int count = 0;
 		if (inputTextOrFilePath != null) {
@@ -83,6 +90,26 @@ public class IO_Text {
 		if (sentences != null && sentences.length > 0) {
 			for (String sentence : sentences) {
 				paragraph += sentence + "\n\n";
+			}
+		}
+		return paragraph;
+	}
+
+	/**
+	 * Converts an array of strings into a full String with paragraph breaks between each array entry
+	 * 
+	 * @param sentences array of sentences
+	 * @param maxIndex the max number of sentences to be used for building the return object
+	 * @return
+	 */
+	public String stringArrayToParagraph(String[] sentences, int maxIndex) {
+		String paragraph = "";
+		if (maxIndex < 1) {
+			return paragraph;
+		}
+		if (sentences != null && sentences.length > 0) {
+			for(int i = 0; i < maxIndex; i++) {
+				paragraph += sentences[i] + "\n\n";
 			}
 		}
 		return paragraph;
