@@ -86,13 +86,10 @@ public class IO_Text {
 	}
 
 	public String stringArrayToParagraph(String[] sentences) {
-		String paragraph = "";
-		if (sentences != null && sentences.length > 0) {
-			for (String sentence : sentences) {
-				paragraph += sentence + "\n\n";
-			}
+		if (sentences == null) {
+			return "";
 		}
-		return paragraph;
+		return stringArrayToParagraph(sentences, sentences.length);
 	}
 
 	/**
@@ -107,11 +104,34 @@ public class IO_Text {
 		if (maxIndex < 1) {
 			return paragraph;
 		}
+
+		if (maxIndex > sentences.length) {
+			maxIndex = sentences.length;
+		}
+
 		if (sentences != null && sentences.length > 0) {
 			for(int i = 0; i < maxIndex; i++) {
 				paragraph += sentences[i] + "\n\n";
 			}
 		}
 		return paragraph;
+	}
+
+	/**
+	 * Allows you to create a paragraph of text on the bottom
+	 * 
+	 * @param paragraph if null or empty will return empty string
+	 * @param appendeture if null or empty will return empty string
+	 * @return
+	 */
+	public String appendParagraph(String paragraph, String appendeture) {
+		if (paragraph == null || paragraph.isEmpty()) {
+			return "";
+		}
+		if (appendeture == null || appendeture.isEmpty()) {
+			return "";
+		}
+
+		return paragraph + appendeture + "\n\n";
 	}
 }

@@ -106,9 +106,52 @@ public class IO_TextTest {
 	}
 
 	@Test
+	public void convertArrayToParagraphWithInvalidMax() throws Exception {
+		String[] sentences = {
+		        "EAST WENATCHEE,  Washington  - Hands on the   wheel, eyes squinting against the winter sun, Lauren Miehe eases his Land Rover down the main drag and tells me how he used to spot promising sites to build a bitcoin mine, back in 2013, when he was a freshly arrived techie from Seattle and had just discovered this sleepy rural community.",
+		        "Bitcoin mining - the complex process in which computers solve a complicated math puzzle to win a stack of virtual currency - uses an inordinate amount of electricity, and thanks to five hydroelectric dams that straddle this stretch of the river, about three hours east of Seattle, miners could buy that power more cheaply here than anywhere else in the nation.",
+		        "Long before locals had even heard the words \"cryptocurrency\" or \"blockchain,\" Miehe and his peers realized that this semi-arid agricultural region known as the Mid-Columbia Basin was the best place to mine bitcoin in America - and maybe the world.",
+		        "Outsiders are so eager to turn the basin's power into cryptocurrency that this winter, several would-be miners from Asia flew their private jet into the local airport, took a rental car to one of the local dams, and, according to a utility official, politely informed staff at the dam visitors center, \"We want to see the dam master because we want to buy some electricity.\""
+		};
+		String expected = "EAST WENATCHEE,  Washington  - Hands on the   wheel, eyes squinting against the winter sun, Lauren Miehe eases his Land Rover down the main drag and tells me how he used to spot promising sites to build a bitcoin mine, back in 2013, when he was a freshly arrived techie from Seattle and had just discovered this sleepy rural community.\n\n"
+		        + "Bitcoin mining - the complex process in which computers solve a complicated math puzzle to win a stack of virtual currency - uses an inordinate amount of electricity, and thanks to five hydroelectric dams that straddle this stretch of the river, about three hours east of Seattle, miners could buy that power more cheaply here than anywhere else in the nation.\n\n"
+		        + "Long before locals had even heard the words \"cryptocurrency\" or \"blockchain,\" Miehe and his peers realized that this semi-arid agricultural region known as the Mid-Columbia Basin was the best place to mine bitcoin in America - and maybe the world.\n\n"
+		        + "Outsiders are so eager to turn the basin's power into cryptocurrency that this winter, several would-be miners from Asia flew their private jet into the local airport, took a rental car to one of the local dams, and, according to a utility official, politely informed staff at the dam visitors center, \"We want to see the dam master because we want to buy some electricity.\""
+		        + "\n\n";
+
+		String converted = text.stringArrayToParagraph(sentences, 5);
+		Assert.assertEquals(expected, converted);
+	}
+
+	@Test
 	public void convertArrayToParagraphWithZeroMax() {
 		Assert.assertEquals("", text.stringArrayToParagraph(null, 0));
 		String[] input = {};
 		Assert.assertEquals("", text.stringArrayToParagraph(input, 0));
+	}
+
+	@Test
+	public void testAppendParagraph() {
+		String inParagraph = "EAST WENATCHEE,  Washington  - Hands on the   wheel, eyes squinting against the winter sun, Lauren Miehe eases his Land Rover down the main drag and tells me how he used to spot promising sites to build a bitcoin mine, back in 2013, when he was a freshly arrived techie from Seattle and had just discovered this sleepy rural community.\n\n"
+		        + "Bitcoin mining - the complex process in which computers solve a complicated math puzzle to win a stack of virtual currency - uses an inordinate amount of electricity, and thanks to five hydroelectric dams that straddle this stretch of the river, about three hours east of Seattle, miners could buy that power more cheaply here than anywhere else in the nation.\n\n"
+		        + "Long before locals had even heard the words \"cryptocurrency\" or \"blockchain,\" Miehe and his peers realized that this semi-arid agricultural region known as the Mid-Columbia Basin was the best place to mine bitcoin in America - and maybe the world.\n\n"
+		        + "Outsiders are so eager to turn the basin's power into cryptocurrency that this winter, several would-be miners from Asia flew their private jet into the local airport, took a rental car to one of the local dams, and, according to a utility official, politely informed staff at the dam visitors center, \"We want to see the dam master because we want to buy some electricity.\""
+		        + "\n\n";
+		String outParagraph = "EAST WENATCHEE,  Washington  - Hands on the   wheel, eyes squinting against the winter sun, Lauren Miehe eases his Land Rover down the main drag and tells me how he used to spot promising sites to build a bitcoin mine, back in 2013, when he was a freshly arrived techie from Seattle and had just discovered this sleepy rural community.\n\n"
+		        + "Bitcoin mining - the complex process in which computers solve a complicated math puzzle to win a stack of virtual currency - uses an inordinate amount of electricity, and thanks to five hydroelectric dams that straddle this stretch of the river, about three hours east of Seattle, miners could buy that power more cheaply here than anywhere else in the nation.\n\n"
+		        + "Long before locals had even heard the words \"cryptocurrency\" or \"blockchain,\" Miehe and his peers realized that this semi-arid agricultural region known as the Mid-Columbia Basin was the best place to mine bitcoin in America - and maybe the world.\n\n"
+		        + "Outsiders are so eager to turn the basin's power into cryptocurrency that this winter, several would-be miners from Asia flew their private jet into the local airport, took a rental car to one of the local dams, and, according to a utility official, politely informed staff at the dam visitors center, \"We want to see the dam master because we want to buy some electricity.\""
+		        + "\n\n" + "this is the end\n\n";
+		Assert.assertEquals(outParagraph, text.appendParagraph(inParagraph, "this is the end"));
+	}
+
+	@Test
+	public void testAppendParagaphNullandEmpty() {
+		Assert.assertEquals("", text.appendParagraph(null, "this is the end"));
+		Assert.assertEquals("", text.appendParagraph("", "this is the end"));
+		Assert.assertEquals("", text.appendParagraph("something", null));
+		Assert.assertEquals("", text.appendParagraph("something", ""));
+		Assert.assertEquals("", text.appendParagraph(null, null));
+		Assert.assertEquals("", text.appendParagraph("", ""));
 	}
 }
