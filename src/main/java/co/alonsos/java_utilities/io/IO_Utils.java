@@ -252,7 +252,7 @@ public class IO_Utils {
 		zipIn.close();
 	}
 
-	public boolean saveInputToFileFile(InputStream stream, String filePath) {
+	public boolean saveInputToFile(InputStream stream, String filePath) {
 		if (stream == null || filePath == null) {
 			return false;
 		}

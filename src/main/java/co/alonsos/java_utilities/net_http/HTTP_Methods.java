@@ -1,6 +1,11 @@
 package co.alonsos.java_utilities.net_http;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
@@ -25,7 +30,6 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
 import org.apache.log4j.Logger;
-
 import co.alonsos.java_utilities.io.IO_Utils;
 
 @SuppressWarnings("deprecation")
@@ -62,16 +66,18 @@ public class HTTP_Methods {
 
 		CloseableHttpClient httpClient;
 		X509HostnameVerifier certPolicy = true ? SSLSocketFactory.ALLOW_ALL_HOSTNAME_VERIFIER
-				: SSLSocketFactory.BROWSER_COMPATIBLE_HOSTNAME_VERIFIER;
+		        : SSLSocketFactory.BROWSER_COMPATIBLE_HOSTNAME_VERIFIER;
 		SSLContext ctx = SSLContext.getInstance("TLS");
-		ctx.init(new KeyManager[0], new TrustManager[] { new DefaultTrustManager() }, new SecureRandom());
+		ctx.init(new KeyManager[0], new TrustManager[] {
+		        new DefaultTrustManager()
+		}, new SecureRandom());
 		SSLContext.setDefault(ctx);
 		SSLConnectionSocketFactory sslsf = new SSLConnectionSocketFactory(ctx, certPolicy);
 
 		// If it's HTTPS, use the FULL trust SocketFactory
 		if (returnWithProtocol(addr).startsWith("https")) {
 			httpClient = HttpClients.custom().setSSLSocketFactory(sslsf).build();
-		} else {
+		}else {
 			httpClient = HttpClients.createDefault();
 		}
 
@@ -82,7 +88,7 @@ public class HTTP_Methods {
 		String protocol = "http";
 		if (!url.startsWith(protocol)) {
 			return protocol + "://" + url;
-		} else {
+		}else {
 			return url;
 		}
 	}
@@ -94,9 +100,10 @@ public class HTTP_Methods {
 		// Fetches it.
 		public T getData();
 	}
-	
+
 	@SuppressWarnings("unused")
-	public Entry<CloseableHttpResponse, String> execGET(String addr, Map<String, String> headers, Integer timeout) throws Exception {
+	public Entry<CloseableHttpResponse, String> execGET(String addr, Map<String, String> headers, Integer timeout)
+	        throws Exception {
 
 		CloseableHttpClient httpclient = null;
 		String response = "";
@@ -106,14 +113,14 @@ public class HTTP_Methods {
 		// Timeout configuration.
 		if (timeout == null) {
 			httpget.setConfig(timeOutConfig);
-		} else {
+		}else {
 			RequestConfig newTimeOutConfig = RequestConfig.custom().setSocketTimeout(timeout).setConnectTimeout(timeout)
-					.build();
+			        .build();
 			httpget.setConfig(newTimeOutConfig);
 		}
 		// Headers
 		if (headers != null) {
-			for (String key : headers.keySet()) {
+			for(String key : headers.keySet()) {
 				httpget.addHeader(key, headers.get(key));
 			}
 		}
@@ -132,18 +139,67 @@ public class HTTP_Methods {
 		httpclient.close();
 		return new AbstractMap.SimpleEntry<CloseableHttpResponse, String>(reply, response);
 	}
+
+	@SuppressWarnings("unused")
+	public Entry<CloseableHttpResponse, String> saveFileToTemp(String addr, Map<String, String> headers,
+	        Integer timeout, String fileExt)
+	        throws Exception {
+		CloseableHttpClient httpclient = null;
+
+		httpclient = newHTTPClient(addr);
+		HttpGet httpget = new HttpGet(returnWithProtocol(addr));
+		// Timeout configuration.
+		if (timeout == null) {
+			httpget.setConfig(timeOutConfig);
+		}else {
+			RequestConfig newTimeOutConfig = RequestConfig.custom().setSocketTimeout(timeout).setConnectTimeout(timeout)
+			        .build();
+			httpget.setConfig(newTimeOutConfig);
+		}
+		// Headers
+		if (headers != null) {
+			for(String key : headers.keySet()) {
+				httpget.addHeader(key, headers.get(key));
+			}
+		}
+
+		CloseableHttpResponse reply = httpclient.execute(httpget);
+
+		// Listen to response.
+		HttpEntity resEntity = reply.getEntity();
+		InputStream replyStream = resEntity.getContent();
+
+		BufferedInputStream bis = new BufferedInputStream(replyStream);
+		File tempFile = File.createTempFile("tempfile", fileExt);
+		BufferedOutputStream bos = new BufferedOutputStream(new FileOutputStream(tempFile));
+		int inByte;
+		while ((inByte = bis.read()) != -1)
+			bos.write(inByte);
+		bis.close();
+		bos.close();
+
+		log.debug("Response from (" + httpget.getURI() + ") : " + reply.getStatusLine().getStatusCode());
+
+		// Cleanup.
+		EntityUtils.consume(resEntity);
+		reply.close();
+		httpclient.close();
+		return new AbstractMap.SimpleEntry<CloseableHttpResponse, String>(reply, tempFile.getAbsolutePath());
+	}
+	
 	
 	/**
 	 * Uses a Closeable HTTP Client to execute an HTTP POST Method
+	 * 
 	 * @param addr: In the form of http/s://some.url.com/path
 	 * @param headers: a map of header/values
 	 * @param entity: An HTTP_Entity object that is already built (http_entity.build)
-	 * @param timeout: If null, it will use the value set in the constructor. 
+	 * @param timeout: If null, it will use the value set in the constructor.
 	 * @return
 	 * @throws Exception
 	 */
 	public Entry<CloseableHttpResponse, String> execPOST(String addr, Map<String, String> headers, HttpEntity entity,
-			Integer timeout) throws Exception {
+	        Integer timeout) throws Exception {
 
 		String response = "";
 
@@ -154,9 +210,9 @@ public class HTTP_Methods {
 		// Timeout configuration.
 		if (timeout == null) {
 			httppost.setConfig(timeOutConfig);
-		} else {
+		}else {
 			RequestConfig newTimeOutConfig = RequestConfig.custom().setSocketTimeout(timeout).setConnectTimeout(timeout)
-					.build();
+			        .build();
 			httppost.setConfig(newTimeOutConfig);
 		}
 
@@ -167,7 +223,7 @@ public class HTTP_Methods {
 
 		// Add header info.
 		if (headers != null) {
-			for (String key : headers.keySet()) {
+			for(String key : headers.keySet()) {
 				httppost.addHeader(key, headers.get(key));
 			}
 		}
@@ -186,4 +242,5 @@ public class HTTP_Methods {
 		httpclient.close();
 
 		return new AbstractMap.SimpleEntry<CloseableHttpResponse, String>(reply, response);
-	}}
+	}
+}

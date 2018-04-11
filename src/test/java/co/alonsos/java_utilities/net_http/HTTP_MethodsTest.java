@@ -1,8 +1,11 @@
 package co.alonsos.java_utilities.net_http;
 
+import java.io.File;
+import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
+import org.apache.commons.io.FileUtils;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.entity.ContentType;
 import org.apache.http.entity.mime.MultipartEntityBuilder;
@@ -12,6 +15,7 @@ import org.json.JSONObject;
 import org.junit.Assert;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import co.alonsos.java_utilities.io.IO_Utils;
 
 public class HTTP_MethodsTest {
 	private static Logger log = Logger.getLogger(HTTP_MethodsTest.class);
@@ -24,6 +28,7 @@ public class HTTP_MethodsTest {
 	String bodyValue = "bar";
 	HTTP_Methods http = null;
 	JSONObject jsonRes = null;
+	IO_Utils io = new IO_Utils();
 	
 	@BeforeEach
 	public void setup() {
@@ -164,5 +169,61 @@ public class HTTP_MethodsTest {
 		Assert.assertEquals(response.getKey().getStatusLine().getStatusCode(), 200);
 		jsonRes = new JSONObject(response.getValue());
 		Assert.assertEquals("value", jsonRes.getJSONObject("args").get("arg"));
+	}
+
+	@Test
+	public void testGetAPIImageJPG() throws Exception {
+		String url = "https://httpbin.org/image/jpeg";
+		Entry<CloseableHttpResponse, String> response = http.saveFileToTemp(url, null, 10000, ".jpg");
+		Assert.assertEquals(response.getKey().getStatusLine().getStatusCode(), 200);
+		// Read the file we stored and the file that was saved
+		File expected = new File("src/test/resources/unit_test_files/temp.jpg");
+		File actual = new File(response.getValue());
+		// If this fails, it could be because the downloaded file (under src...) could be different than
+		// the file actually being downloaded
+		Assert.assertEquals(expected.length(), actual.length());
+		FileUtils.deleteQuietly(actual);
+	}
+
+	@Test
+	public void testGetAPIImagePNG() throws Exception {
+		String url = "https://httpbin.org/image/png";
+		Entry<CloseableHttpResponse, String> response = http.saveFileToTemp(url, null, 10000, ".png");
+		Assert.assertEquals(response.getKey().getStatusLine().getStatusCode(), 200);
+		// Read the file we stored and the file that was saved
+		File expected = new File("src/test/resources/unit_test_files/temp.png");
+		File actual = new File(response.getValue());
+		// If this fails, it could be because the downloaded file (under src...) could be different than
+		// the file actually being downloaded
+		Assert.assertEquals(expected.length(), actual.length());
+		FileUtils.deleteQuietly(actual);
+	}
+
+	@Test
+	public void testGetAPIImageSVG() throws Exception {
+		String url = "https://httpbin.org/image/svg";
+		Entry<CloseableHttpResponse, String> response = http.saveFileToTemp(url, null, 10000, ".svg");
+		Assert.assertEquals(response.getKey().getStatusLine().getStatusCode(), 200);
+		// Read the file we stored and the file that was saved
+		File expected = new File("src/test/resources/unit_test_files/temp.svg");
+		File actual = new File(response.getValue());
+		// If this fails, it could be because the downloaded file (under src...) could be different than
+		// the file actually being downloaded
+		Assert.assertEquals(expected.length(), actual.length());
+		FileUtils.deleteQuietly(actual);
+	}
+
+	@Test
+	public void testGetAPIImageWEBP() throws Exception {
+		String url = "https://httpbin.org/image/webp";
+		Entry<CloseableHttpResponse, String> response = http.saveFileToTemp(url, null, 10000, ".webp");
+		Assert.assertEquals(response.getKey().getStatusLine().getStatusCode(), 200);
+		// Read the file we stored and the file that was saved
+		File expected = new File("src/test/resources/unit_test_files/temp.webp");
+		File actual = new File(response.getValue());
+		// If this fails, it could be because the downloaded file (under src...) could be different than
+		// the file actually being downloaded
+		Assert.assertEquals(expected.length(), actual.length());
+		FileUtils.deleteQuietly(actual);
 	}
 }
