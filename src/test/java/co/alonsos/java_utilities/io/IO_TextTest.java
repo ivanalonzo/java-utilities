@@ -2,13 +2,15 @@ package co.alonsos.java_utilities.io;
 
 import java.util.HashMap;
 import java.util.StringTokenizer;
-
+import org.apache.log4j.Logger;
 import org.junit.Assert;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 public class IO_TextTest {
 	IO_Text text;
+	IO_Utils io = new IO_Utils();
+	private static Logger log = Logger.getLogger(IO_TextTest.class);
 
 	@BeforeEach
 	public void setup() {
@@ -40,6 +42,14 @@ public class IO_TextTest {
 		String expected = "Convert <br> to HTML breaks";
 		String converted = text.convertToHTML(input);
 		Assert.assertEquals(expected, converted);
+	}
+
+	@Test
+	public void testCleanText() throws Exception {
+		String input = io.fileToString("src/test/resources/unit_test_files/TabsInText.txt");
+		String expected = "Marooned motorists, transport woes, after floods in DC Chantalle Edmunds @chantallenews April 16, 2018 10:50 am04/16/2018 gave way to localized flash flooding Monday and caused large pools of standing water in the D.C. area, with drainage proving a problem on the region's roadways.";
+		String actual = text.cleanText(input);
+		Assert.assertEquals(expected, actual);
 	}
 
 	@Test

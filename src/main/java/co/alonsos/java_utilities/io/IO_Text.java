@@ -60,6 +60,30 @@ public class IO_Text {
 		return clean.trim();
 	}
 
+	public String cleanText(String input) {
+		String clean = "";
+		String[] words;
+		clean = input.trim();
+		/*
+		 * We have to do multiple clean up on the tabs and next lines because if the input already
+		 * includes the \t in the text, repalceAll will not work the same way as it does for embedded
+		 * tabs.
+		 */
+		clean = clean.replaceAll("\\\\t", "");
+		clean = clean.replaceAll("\\t", "");
+		clean = clean.replaceAll("\\\\n", "");
+		clean = clean.replaceAll("\\n", "");
+		clean = clean.replaceAll("\\|", "");
+		words = clean.split("\\s");
+		clean = "";
+		for(int i = 0; i < words.length; i++) {
+			if (!words[i].trim().isEmpty()) {
+				clean += words[i].trim() + " ";
+			}
+		}
+		return clean.trim();
+	}
+
 	/**
 	 * Simple method which uses StrigTokenizer to count the number of words in the given input file
 	 * 
