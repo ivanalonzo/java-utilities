@@ -1,5 +1,6 @@
 package co.alonsos.java_utilities.io;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.StringTokenizer;
 import org.apache.log4j.Logger;
@@ -163,5 +164,13 @@ public class IO_TextTest {
 		Assert.assertEquals("", text.appendParagraph("something", ""));
 		Assert.assertEquals("", text.appendParagraph(null, null));
 		Assert.assertEquals("", text.appendParagraph("", ""));
+	}
+
+	@Test
+	public void testFixEncoding() throws IOException {
+		String input = io.fileToString("src/test/resources/unit_test_files/mis-encoded.txt");
+		String expected = io.fileToString("src/test/resources/unit_test_files/correctly-encoded.txt");
+		String encodingMap = io.fileToString("src/test/resources/unit_test_files/encoding_map.json");
+		Assert.assertEquals(expected, text.fixEncoding(input, encodingMap));
 	}
 }

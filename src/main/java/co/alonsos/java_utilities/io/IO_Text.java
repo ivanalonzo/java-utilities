@@ -5,7 +5,8 @@ import java.util.Map;
 import java.util.StringTokenizer;
 
 import org.apache.log4j.Logger;
-
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import co.alonsos.java_utilities.Constants;
 
 
@@ -157,5 +158,29 @@ public class IO_Text {
 		}
 
 		return paragraph + appendeture + "\n\n";
+	}
+
+	/**
+	 * When a String is mis-encoded and you have no control over the encoding, this method will
+	 * allow you to find those mis-encoded strings and attempt to fix it by replacing all instances
+	 * of the bad encoding.
+	 * 
+	 * @param input: Badly encoded string
+	 * @param encodingMap: It must be a JSON key:value string like this:
+	 *        "bad encoding":"replacement char"
+	 * @return
+	 */
+	public String fixEncoding(String input, String encodingMap) {
+		String clean = "";
+		Gson gson = new Gson();
+
+		HashMap<String, String> decodingMap = gson.fromJson(encodingMap,
+		        new TypeToken<HashMap<String, String>>() {}.getType());
+
+		for(Map.Entry m : decodingMap.entrySet()) {
+			input = input.replaceAll(m.getKey().toString(), m.getValue().toString());
+		}
+		clean = input;
+		return clean.trim();
 	}
 }
