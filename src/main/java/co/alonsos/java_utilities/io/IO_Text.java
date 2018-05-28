@@ -61,7 +61,7 @@ public class IO_Text {
 		return clean.trim();
 	}
 
-	public String cleanText(String input) {
+	public String cleanText(String input, boolean removeNewLines) {
 		String clean = "";
 		String[] words;
 		clean = input.trim();
@@ -72,8 +72,15 @@ public class IO_Text {
 		 */
 		clean = clean.replaceAll("\\\\t", "");
 		clean = clean.replaceAll("\\t", "");
-		clean = clean.replaceAll("\\\\n", "");
-		clean = clean.replaceAll("\\n", "");
+
+		if (removeNewLines) {
+			clean = clean.replaceAll("\\\\n", "");
+			clean = clean.replaceAll("\\n", "");
+		}else {
+			clean = clean.replaceAll("\\\\n", "<br><br>");
+			clean = clean.replaceAll("\\n", "<br><br>");
+		}
+
 		clean = clean.replaceAll("\\|", "");
 		words = clean.split("\\s");
 		clean = "";

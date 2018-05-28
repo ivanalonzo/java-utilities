@@ -48,7 +48,23 @@ public class IO_TextTest {
 	public void testCleanText() throws Exception {
 		String input = io.fileToString("src/test/resources/unit_test_files/TabsInText.txt");
 		String expected = "Marooned motorists, transport woes, after floods in DC Chantalle Edmunds @chantallenews April 16, 2018 10:50 am04/16/2018 gave way to localized flash flooding Monday and caused large pools of standing water in the D.C. area, with drainage proving a problem on the region's roadways.";
-		String actual = text.cleanText(input);
+		String actual = text.cleanText(input, true);
+		Assert.assertEquals(expected, actual);
+	}
+
+	@Test
+	public void testCleanTextRemoveNewLines() throws Exception {
+		String input = io.fileToString("src/test/resources/unit_test_files/NewLinesInText.txt");
+		String expected = "Including speaking with witnesses and reading the autopsy and police reports. I got to a place where I had to see Sirhan, Kennedy said. He would not discuss the specifics of their conversation";
+		String actual = text.cleanText(input, true);
+		Assert.assertEquals(expected, actual);
+	}
+
+	@Test
+	public void testCleanTextIgnoreNewLines() throws Exception {
+		String input = io.fileToString("src/test/resources/unit_test_files/NewLinesInText.txt");
+		String expected = "Including speaking with witnesses and reading the autopsy and police reports.<br><br> I got to a place where I had to see Sirhan, Kennedy said. He would not discuss the specifics of their conversation";
+		String actual = text.cleanText(input, false);
 		Assert.assertEquals(expected, actual);
 	}
 
