@@ -77,8 +77,8 @@ public class IO_Text {
 			clean = clean.replaceAll("\\\\n", "");
 			clean = clean.replaceAll("\\n", "");
 		}else {
-			clean = clean.replaceAll("\\\\n", "<br><br>");
-			clean = clean.replaceAll("\\n", "<br><br>");
+			clean = clean.replaceAll("\\\\n", "</p>");
+			clean = clean.replaceAll("\\n", "</p>");
 		}
 
 		clean = clean.replaceAll("\\|", "");

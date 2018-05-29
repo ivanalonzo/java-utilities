@@ -63,7 +63,7 @@ public class IO_TextTest {
 	@Test
 	public void testCleanTextIgnoreNewLines() throws Exception {
 		String input = io.fileToString("src/test/resources/unit_test_files/NewLinesInText.txt");
-		String expected = "Including speaking with witnesses and reading the autopsy and police reports.<br><br> I got to a place where I had to see Sirhan, Kennedy said. He would not discuss the specifics of their conversation";
+		String expected = "Including speaking with witnesses and reading the autopsy and police reports.</p> I got to a place where I had to see Sirhan, Kennedy said. He would not discuss the specifics of their conversation";
 		String actual = text.cleanText(input, false);
 		Assert.assertEquals(expected, actual);
 	}
