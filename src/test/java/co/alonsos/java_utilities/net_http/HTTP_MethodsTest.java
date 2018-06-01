@@ -16,7 +16,6 @@ import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.entity.ContentType;
 import org.apache.http.entity.mime.MultipartEntityBuilder;
 import org.apache.http.entity.mime.content.StringBody;
-import org.apache.log4j.Logger;
 import org.json.JSONObject;
 import org.junit.Assert;
 import org.junit.jupiter.api.AfterEach;
@@ -28,11 +27,9 @@ import org.mockserver.model.HttpStatusCode;
 import org.mockserver.model.Parameter;
 
 public class HTTP_MethodsTest {
-	private static Logger log = Logger.getLogger(HTTP_MethodsTest.class);
 
 	private ClientAndServer mockServer;
 	int serverPort = 9999;
-	int clientPort = 8888;
 	HTTP_Methods http;
 	String expHeader = "Token";
 	String expHeaderValue = "Newtokenvalue";
