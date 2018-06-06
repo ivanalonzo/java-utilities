@@ -186,6 +186,6 @@ public class IO_TextTest {
 		String input = io.fileToString("src/test/resources/unit_test_files/mis-encoded.txt");
 		String expected = io.fileToString("src/test/resources/unit_test_files/correctly-encoded.txt");
 		String encodingMap = io.fileToString("src/test/resources/unit_test_files/encoding_map.json");
-		Assert.assertEquals(expected, text.fixEncoding(input, encodingMap));
+		Assert.assertEquals(expected, text.findReplace(input, encodingMap));
 	}
 }

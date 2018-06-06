@@ -170,23 +170,25 @@ public class IO_Text {
 	}
 
 	/**
-	 * When a String is mis-encoded and you have no control over the encoding, this method will
-	 * allow you to find those mis-encoded strings and attempt to fix it by replacing all instances
-	 * of the bad encoding.
+	 * This method can be used to find and replace all instances of a string with its corresponding
+	 * value
+	 * 
+	 * The map is a JSON key:value object
 	 * 
 	 * @param input: Badly encoded string
 	 * @param encodingMap: It must be a JSON key:value string like this:
+	 *        "Morning":"Night",
 	 *        "bad encoding":"replacement char"
 	 * @return
 	 */
-	public String fixEncoding(String input, String encodingMap) {
+	public String findReplace(String input, String map) {
 		String clean = "";
 		Gson gson = new Gson();
 
-		HashMap<String, String> decodingMap = gson.fromJson(encodingMap,
+		HashMap<String, String> findReplaceMap = gson.fromJson(map,
 		        new TypeToken<HashMap<String, String>>() {}.getType());
 
-		for(Map.Entry m : decodingMap.entrySet()) {
+		for(Map.Entry m : findReplaceMap.entrySet()) {
 			input = input.replaceAll(m.getKey().toString(), m.getValue().toString());
 		}
 		clean = input;
