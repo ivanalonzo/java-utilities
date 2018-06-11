@@ -19,6 +19,7 @@ import javax.net.ssl.SSLContext;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
 import org.apache.http.HttpEntity;
+import org.apache.http.HttpHost;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
@@ -40,8 +41,23 @@ public class HTTP_Methods {
 
 	RequestConfig timeOutConfig;
 
-	public HTTP_Methods(int conTimeout, int sockTiemeout) {
-		timeOutConfig = RequestConfig.custom().setSocketTimeout(sockTiemeout).setConnectTimeout(conTimeout).build();
+	public HTTP_Methods(int conTimeout, int sockTimeout) {
+		timeOutConfig = RequestConfig.custom().setSocketTimeout(sockTimeout).setConnectTimeout(conTimeout).build();
+	}
+
+	public HTTP_Methods(int conTimeout, int sockTimeout, String proxyHost, int proxyPort, boolean https) {
+		if (proxyHost != null && !proxyHost.isEmpty()) {
+			HttpHost proxy;
+			if (https) {
+				proxy = new HttpHost(proxyHost, proxyPort, "https");
+			}else {
+				proxy = new HttpHost(proxyHost, proxyPort, "http");
+			}
+			timeOutConfig = RequestConfig.custom().setSocketTimeout(sockTimeout).setConnectTimeout(conTimeout)
+			        .setProxy(proxy).build();
+		}else {
+			timeOutConfig = RequestConfig.custom().setSocketTimeout(sockTimeout).setConnectTimeout(conTimeout).build();
+		}
 	}
 
 	private static class DefaultTrustManager implements X509TrustManager {
