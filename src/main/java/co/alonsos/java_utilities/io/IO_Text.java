@@ -194,4 +194,27 @@ public class IO_Text {
 		clean = input;
 		return clean.trim();
 	}
+
+	/**
+	 * Given the input, it will look up the value in the input map
+	 * 
+	 * @param input: The value to search for
+	 * @param map: JSON file in the form of KV pairs
+	 * @return
+	 * @throws Exception
+	 */
+	public String findInHash(String input, String inputMap) throws Exception {
+		if (input == null || inputMap == null || input.isEmpty() || inputMap.isEmpty()) {
+			throw new Exception("Input or Input Map cannot be null");
+		}
+
+		Gson gson = new Gson();
+		HashMap<String, String> hashMap = gson.fromJson(inputMap,
+		        new TypeToken<HashMap<String, String>>() {}.getType());
+		if (hashMap.containsKey(input)) {
+			return hashMap.get(input);
+		}else {
+			throw new Exception("Key was not found");
+		}
+	}
 }

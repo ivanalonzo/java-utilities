@@ -188,4 +188,114 @@ public class IO_TextTest {
 		String encodingMap = io.fileToString("src/test/resources/unit_test_files/encoding_map.json");
 		Assert.assertEquals(expected, text.findReplace(input, encodingMap));
 	}
+
+	@Test
+	public void testFindInHash1() throws Exception {
+		String input = "Key1";
+		String expected = "Value1";
+		String hashMap = io.fileToString("src/test/resources/unit_test_files/test-search-mapping.json");
+		Assert.assertEquals(expected, text.findInHash(input, hashMap));
+	}
+
+	@Test
+	public void testFindInHash2() throws Exception {
+		String input = "Key2";
+		String expected = "value2";
+		String hashMap = io.fileToString("src/test/resources/unit_test_files/test-search-mapping.json");
+		Assert.assertEquals(expected, text.findInHash(input, hashMap));
+	}
+
+	@Test
+	public void testFindInHash3() throws Exception {
+		String input = "key3";
+		String expected = "value3";
+		String hashMap = io.fileToString("src/test/resources/unit_test_files/test-search-mapping.json");
+		Assert.assertEquals(expected, text.findInHash(input, hashMap));
+	}
+
+	@Test
+	public void testFindInHash4() throws Exception {
+		String input = "Key 4";
+		String expected = "Value 4";
+		String hashMap = io.fileToString("src/test/resources/unit_test_files/test-search-mapping.json");
+		Assert.assertEquals(expected, text.findInHash(input, hashMap));
+	}
+
+	@Test
+	public void testFindInHash5() throws Exception {
+		String input = " key 5";
+		String expected = " value 5";
+		String hashMap = io.fileToString("src/test/resources/unit_test_files/test-search-mapping.json");
+		Assert.assertEquals(expected, text.findInHash(input, hashMap));
+	}
+
+	@Test
+	public void testFindInHash6() throws Exception {
+		String input = " key 6 ";
+		String expected = " value 6 ";
+		String hashMap = io.fileToString("src/test/resources/unit_test_files/test-search-mapping.json");
+		Assert.assertEquals(expected, text.findInHash(input, hashMap));
+	}
+
+	@Test
+	public void testFindInHashInvalidKey() throws Exception {
+		String input = "invalid";
+		String hashMap = io.fileToString("src/test/resources/unit_test_files/test-search-mapping.json");
+		try {
+			text.findInHash(input, hashMap);
+		}catch (Exception e) {
+			Assert.assertEquals("Key was not found", e.getMessage());
+		}
+	}
+
+	@Test
+	public void testFindInHashNullKey() throws Exception {
+		String hashMap = io.fileToString("src/test/resources/unit_test_files/test-search-mapping.json");
+		try {
+			text.findInHash(null, hashMap);
+		}catch (Exception e) {
+			Assert.assertEquals("Input or Input Map cannot be null", e.getMessage());
+		}
+	}
+
+	@Test
+	public void testFindInHashNullMap() throws Exception {
+		String input = "invalid";
+		try {
+			text.findInHash(input, null);
+		}catch (Exception e) {
+			Assert.assertEquals("Input or Input Map cannot be null", e.getMessage());
+		}
+	}
+
+	@Test
+	public void testFindInHashNullAll() throws Exception {
+		try {
+			text.findInHash(null, null);
+		}catch (Exception e) {
+			Assert.assertEquals("Input or Input Map cannot be null", e.getMessage());
+		}
+	}
+
+	@Test
+	public void testFindInHashEmptyInput() throws Exception {
+		String input = "";
+		String hashMap = io.fileToString("src/test/resources/unit_test_files/test-search-mapping.json");
+		try {
+			text.findInHash(input, hashMap);
+		}catch (Exception e) {
+			Assert.assertEquals("Input or Input Map cannot be null", e.getMessage());
+		}
+	}
+
+	@Test
+	public void testFindInHashEmptyInputMap() throws Exception {
+		String input = "Key";
+		String hashMap = "";
+		try {
+			text.findInHash(input, hashMap);
+		}catch (Exception e) {
+			Assert.assertEquals("Input or Input Map cannot be null", e.getMessage());
+		}
+	}
 }
