@@ -67,8 +67,8 @@ public class HTTP_MethodsTest {
 	 * Test GET and setting a header
 	 */
 	@Test
-	public void testGeWithHeadert() throws Exception {
-		String headersGet = "/headers";
+	public void testGetWithHeader() throws Exception {
+		String headersGet = "/headersGet";
 		String testURL = "http://localhost:" + serverPort + headersGet;
 		Header header = new Header(expHeader, expHeaderValue);
 		mockServer.when(request().withPath(headersGet).withHeader(header)).respond(response().withBody("OK"));
