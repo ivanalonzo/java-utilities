@@ -3,7 +3,7 @@ package co.alonsos.java_utilities.io;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.StringTokenizer;
-
+import org.apache.commons.text.similarity.LevenshteinDistance;
 import org.apache.log4j.Logger;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -216,5 +216,30 @@ public class IO_Text {
 		}else {
 			throw new Exception("Key was not found");
 		}
+	}
+
+	private int getLevenshteinDistance(String input1, String input2) {
+		LevenshteinDistance sim = new LevenshteinDistance();
+		return sim.apply(input1.toLowerCase(), input2.toLowerCase());
+	}
+
+	public double similarAvgRate(String input1, String input2) {
+		if (input1 == null) {
+			input1 = "";
+		}
+
+		if (input2 == null) {
+			input2 = "";
+		}
+		int levenSim = 0;
+		double sim = 0.0;
+		levenSim = getLevenshteinDistance(input1, input2);
+		double avgLength = (input1.length() + input2.length()) / 2;
+		sim = (levenSim / avgLength) * 100;
+		if (Double.isNaN(sim)) {
+			sim = 0.0;
+		}
+		return sim;
+
 	}
 }
