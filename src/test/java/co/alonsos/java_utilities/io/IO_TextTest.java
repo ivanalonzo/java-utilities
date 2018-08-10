@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import org.apache.log4j.Logger;
 import org.junit.Assert;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -15,6 +16,11 @@ public class IO_TextTest {
 	@BeforeEach
 	public void setup() {
 		text = new IO_Text();
+	}
+
+	@AfterEach
+	public void tearDown() {
+		text = null;
 	}
 
 	@Test
@@ -298,4 +304,86 @@ public class IO_TextTest {
 			Assert.assertEquals("Input or Input Map cannot be null", e.getMessage());
 		}
 	}
+	
+	@Test
+	public void testSimAverage() {
+		String input1 = "";
+		String input2 = "";
+		Double expected = 0.0;
+		Double actual = text.similarAvgRate(input1, input2);
+		Assert.assertEquals(expected, actual);
+	}
+
+	@Test
+	public void testSimAverageSlightSim1() {
+		String input1 = "exclusive: pope criticises trump administration policy on migrant family separation";
+		String input2 = "exclusive: pope criticizes trump administration policy on migrant family separation";
+		Double expected = 1.2048192771084338;
+		Double actual = text.similarAvgRate(input1, input2);
+		Assert.assertEquals(expected, actual);
+	}
+
+	@Test
+	public void testSimAverageSlightSim2() {
+		String input1 = "here's why experts are skeptical of the 'gaming disorder' diagnosis";
+		String input2 = "here’s why experts are skeptical of the ‘gaming disorder’ diagnosis";
+		Double expected = 4.477611940298507;
+		Double actual = text.similarAvgRate(input1, input2);
+		Assert.assertEquals(expected, actual);
+	}
+
+	@Test
+	public void testSimAverageLargeSim1() {
+		String input1 = "asylum requests in eu fall from record highs, jump in u.s.: oecd";
+		String input2 = "asylum requests in eu fall from record highs, jump in u.s. - oecd";
+		Double expected = 3.125;
+		Double actual = text.similarAvgRate(input1, input2);
+		Assert.assertEquals(expected, actual);
+	}
+
+	@Test
+	public void testSimAverageLargeSim2() {
+		String input1 = "romanian ruling party conjures parallel state fears in legal 'blitzkrieg'";
+		String input2 = "insight - romanian ruling party conjures parallel state fears in legal ‘blitzkrieg’";
+		Double expected = 15.384615384615385;
+		Double actual = text.similarAvgRate(input1, input2);
+		Assert.assertEquals(expected, actual);
+	}
+
+	@Test
+	public void testSimAverageLargeSim3() {
+		String input1 = "123456789";
+		String input2 = "987654321";
+		Double expected = 88.88888888888889;
+		Double actual = text.similarAvgRate(input1, input2);
+		Assert.assertEquals(expected, actual);
+	}
+
+	@Test
+	public void testSimAverageBadInput1() {
+		String input1 = null;
+		String input2 = "";
+		Double expected = 0.0;
+		Double actual = text.similarAvgRate(input1, input2);
+		Assert.assertEquals(expected, actual);
+	}
+
+	@Test
+	public void testSimAverageBadInput2() {
+		String input1 = "";
+		String input2 = null;
+		Double expected = 0.0;
+		Double actual = text.similarAvgRate(input1, input2);
+		Assert.assertEquals(expected, actual);
+	}
+
+	@Test
+	public void testSimAverageBadInput3() {
+		String input1 = "asylum requests in eu fall from record highs, jump in u.s.: oecd";
+		String input2 = "insight - romanian ruling party conjures parallel state fears in legal ‘blitzkrieg’";
+		Double expected = 89.04109589041096;
+		Double actual = text.similarAvgRate(input1, input2);
+		Assert.assertEquals(expected, actual);
+	}
+
 }
