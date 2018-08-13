@@ -49,6 +49,9 @@ public class TextContent extends ContentParagraph{
 				rawContent += sentences[i] + newLine;
 			}
 		}
+		for (ContentParagraph para : contentParagraphs) {
+			wordCount += para.getWordCount();
+		}
 	}
 	
 	public void rateDuplicates(double dupThreshold) {
@@ -76,5 +79,23 @@ public class TextContent extends ContentParagraph{
 			}
 		}
 		return content.trim(); 
+	}
+	
+	public String[] getCleanSentences(double dupThreshold) {
+		List<String> content = new ArrayList<String>();
+		//De-dup 
+		rateDuplicates(dupThreshold);
+		for (ContentParagraph para : contentParagraphs) {
+			if (para.getErMsg() == null) {
+				content.add(para.getParagraph());
+			}
+		}
+		
+		String[] result = new String[content.size()];
+		for (int i = 0; i < content.size(); i++) {
+			result[i] = content.get(i);
+		}
+		content = null;
+		return result; 
 	}
 }
