@@ -4,6 +4,9 @@ import java.util.HashMap;
 
 public class Constants {
 	
+	public static String CONTENT_SET = "There is content already set, you can only set content or sentences";
+	public static String SENTENCES_SET = "There are sentences arleady set, you can only set content or sentences";
+
 	/**
 	 * A static method which returns a map of conversion strings
 	 * for use by cleanup methods

@@ -1,5 +1,6 @@
 package co.alonsos.java_utilities.lang;
 
+import co.alonsos.java_utilities.Constants;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -11,13 +12,12 @@ import lombok.Setter;
  *
  */
 public class Content {
-	protected String CONTENT_SET = "There is content already set, you can only set content or sentences";
-	protected String SENTENCES_SET = "There are sentences arleady set, you can only set content or sentences";
 
 	String title;
 	String content;
 	String[] sentences;
 	boolean hasSentences = false;
+	int wordCount;
 
 	public boolean isHasSentences() {
 		if (sentences != null && sentences.length > 0) {
@@ -30,7 +30,7 @@ public class Content {
 		if (content == null) {
 			sentences = sents;
 		}else {
-			throw new Exception (CONTENT_SET);
+			throw new Exception (Constants.CONTENT_SET);
 		}
 	}
 	
@@ -38,7 +38,7 @@ public class Content {
 		if (sentences == null) {
 			content = cont;
 		}else {
-			throw new Exception (SENTENCES_SET);
+			throw new Exception (Constants.SENTENCES_SET);
 		}
 	}
 

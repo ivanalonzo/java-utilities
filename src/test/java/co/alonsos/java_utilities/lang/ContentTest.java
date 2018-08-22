@@ -2,6 +2,7 @@ package co.alonsos.java_utilities.lang;
 
 import org.junit.Assert;
 import org.junit.jupiter.api.Test;
+import co.alonsos.java_utilities.Constants;
 
 public class ContentTest {
 
@@ -36,7 +37,7 @@ public class ContentTest {
 			cont.setContent("This is the content");
 			cont.setSentences(sents);
 		}catch (Exception e) {
-			Assert.assertEquals(cont.CONTENT_SET, e.getMessage());
+			Assert.assertEquals(Constants.CONTENT_SET, e.getMessage());
 		}
 	}
 
@@ -51,7 +52,7 @@ public class ContentTest {
 			cont.setSentences(sents);
 			cont.setContent("This is the content");
 		}catch (Exception e) {
-			Assert.assertEquals(cont.SENTENCES_SET, e.getMessage());
+			Assert.assertEquals(Constants.SENTENCES_SET, e.getMessage());
 		}
 	}
 
