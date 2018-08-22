@@ -17,8 +17,6 @@ public class ContentParagraph extends ContentSentence {
 	private List<ContentSentence> paragraphSentences;
 	private int sentenceCount;
 	private Double simRat;
-	private String erMsg;
-	private int wordCount;
 
 
 	public ContentParagraph(String paragraph) {

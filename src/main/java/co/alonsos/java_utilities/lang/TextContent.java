@@ -19,10 +19,6 @@ public class TextContent extends ContentParagraph{
 	private String title;
 	private String rawContent;
 	private List<ContentParagraph> contentParagraphs;
-	private int wordCount;
-	
-	private JLanguageTool langTool = new JLanguageTool(new AmericanEnglish());
-	
 
 	public TextContent(String title, String rawContent) {
 		this.title = title;

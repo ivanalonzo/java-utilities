@@ -19,8 +19,8 @@ public class ContentSentence {
 
 	private String sentence;
 	private String gramSuggestions;
-	private String erMsg;
-	private int wordCount;
+	protected String erMsg;
+	protected int wordCount;
 	
 	protected ContentSentence() {}
 	
