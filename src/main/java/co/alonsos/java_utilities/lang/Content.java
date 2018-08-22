@@ -11,8 +11,8 @@ import lombok.Setter;
  *
  */
 public class Content {
-	public String CONTENT_SET = "There is content already set, you can only set content or sentences";
-	public String SENTENCES_SET = "There are sentences arleady set, you can only set content or sentences";
+	protected String CONTENT_SET = "There is content already set, you can only set content or sentences";
+	protected String SENTENCES_SET = "There are sentences arleady set, you can only set content or sentences";
 
 	String title;
 	String content;
