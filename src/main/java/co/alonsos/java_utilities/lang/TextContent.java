@@ -69,9 +69,11 @@ public class TextContent extends ContentParagraph{
 		String content = "";
 		//De-dup 
 		rateDuplicates(dupThreshold);
+		wordCount = 0;
 		for (ContentParagraph para : contentParagraphs) {
 			if (para.getErMsg() == null) {
 				content += para.getParagraph() + newLine;
+				wordCount += para.getWordCount();
 			}
 		}
 		return content.trim(); 
@@ -81,9 +83,11 @@ public class TextContent extends ContentParagraph{
 		List<String> content = new ArrayList<String>();
 		//De-dup 
 		rateDuplicates(dupThreshold);
+		wordCount = 0;
 		for (ContentParagraph para : contentParagraphs) {
 			if (para.getErMsg() == null) {
 				content.add(para.getParagraph());
+				wordCount += para.getWordCount();
 			}
 		}
 		

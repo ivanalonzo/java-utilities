@@ -125,6 +125,22 @@ public class TextContentTest {
 	}
 
 	@Test
+	public void testTextContentRateDups1DupWithWordCount() throws IOException {
+		String expected = io.fileToString("src/test/resources/unit_test_files/TextContent/Exp.NormalFullContent.txt");
+		double dupThreshold = 30.0;
+		String title = "Normal Full Content";
+		String rawContent = io.fileToString("src/test/resources/unit_test_files/TextContent/DuplicateFullCont.txt");
+		TextContent cont = new TextContent(title, rawContent);
+		String actual = cont.getCleanContent(dupThreshold);
+		// We expect 4, because while we don't include the duplicate para in the cleanup, it is still part
+		// of the
+		// object
+		Assert.assertEquals(4, cont.getContentParagraphs().size());
+		Assert.assertEquals(expected, actual);
+		Assert.assertEquals(171, cont.getWordCount());
+	}
+
+	@Test
 	public void testTextContentSentenceCount() throws IOException {
 		String title = "Normal Full Content";
 		String rawContent = io.fileToString("src/test/resources/unit_test_files/TextContent/NormalFullContent.txt");
@@ -282,6 +298,47 @@ public class TextContentTest {
 		Assert.assertEquals(43, cont.getContentParagraphs().get(0).getWordCount());
 		Assert.assertEquals(58, cont.getContentParagraphs().get(1).getWordCount());
 		Assert.assertEquals(70, cont.getContentParagraphs().get(2).getWordCount());
+		Assert.assertEquals(171, cont.getWordCount());
+	}
+
+	@Test
+	public void testTextSentenceRateDups1DupWordCount() throws IOException {
+		String[] rawContent = {
+		        "Welcome to Edition 1.12 of the Rocket Report! This week we have all kinds of stories about small rockets, the scoop on a Texas rocket company back from the dead, and some commercial crew launch dates that we may believe. Or maybe not.",
+		        "As always, we welcome reader submissions, and if you don't want to miss an issue, please subscribe using the box below (the form will not appear on AMP-enabled versions of the site). Each report will include information on small-, medium-, and heavy-lift rockets as well as a quick look ahead at the next three launches on the calendar.",
+		        "Welcome to Edition 1.12 of the Rocket Report! This week we have all kinds of stories about small rockets, the scoop on a Texas rocket company back from the dead, and some commercial crew launch dates that we may believe. Or maybe not.",
+		        "New report quantifies surge in small rockets. In an updated report on the state of the small-satellite launch industry, Carlos Niederstrasser quantifies the increase in potential small launch vehicle contenders, defined as rockets capable of carrying up to 1000kg to low-Earth orbit. The growth has been remarkable. \"The total number of efforts we are tracking... has increased from a mere 31 in 2015 to over 101 in 2018,\" he writes."
+		};
+		String expected = io.fileToString("src/test/resources/unit_test_files/TextContent/Exp.NormalFullContent.txt");
+		double dupThreshold = 30.0;
+		String title = "Normal Full Content";
+		TextContent cont = new TextContent(title, rawContent);
+		cont.rateDuplicates(dupThreshold);
+		// We expect that in clean up, this para will be removed.
+		String actual = cont.getCleanContent(dupThreshold);
+		// We expect 4, because while we don't include the duplicate para in the cleanup, it is still part
+		// of the object
+		Assert.assertEquals(4, cont.getContentParagraphs().size());
+		Assert.assertEquals(expected, actual);
+		Assert.assertEquals(171, cont.getWordCount());
+	}
+
+	@Test
+	public void testTextSentenceRateDups1DupWordCount2() throws IOException {
+		String[] rawContent = {
+		        "Welcome to Edition 1.12 of the Rocket Report! This week we have all kinds of stories about small rockets, the scoop on a Texas rocket company back from the dead, and some commercial crew launch dates that we may believe. Or maybe not.",
+		        "As always, we welcome reader submissions, and if you don't want to miss an issue, please subscribe using the box below (the form will not appear on AMP-enabled versions of the site). Each report will include information on small-, medium-, and heavy-lift rockets as well as a quick look ahead at the next three launches on the calendar.",
+		        "Welcome to Edition 1.12 of the Rocket Report! This week we have all kinds of stories about small rockets, the scoop on a Texas rocket company back from the dead, and some commercial crew launch dates that we may believe. Or maybe not.",
+		        "New report quantifies surge in small rockets. In an updated report on the state of the small-satellite launch industry, Carlos Niederstrasser quantifies the increase in potential small launch vehicle contenders, defined as rockets capable of carrying up to 1000kg to low-Earth orbit. The growth has been remarkable. \"The total number of efforts we are tracking... has increased from a mere 31 in 2015 to over 101 in 2018,\" he writes."
+		};
+		double dupThreshold = 30.0;
+		String title = "Normal Full Content";
+		TextContent cont = new TextContent(title, rawContent);
+		cont.rateDuplicates(dupThreshold);
+		// We expect that in clean up, this para will be removed.
+		cont.getCleanSentences(dupThreshold);
+		// We expect 4, because while we don't include the duplicate para in the cleanup, it is still part
+		// of the object
 		Assert.assertEquals(171, cont.getWordCount());
 	}
 
