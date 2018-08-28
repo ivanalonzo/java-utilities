@@ -39,7 +39,34 @@ public class TextContentTest {
 		}catch (Exception e) {
 			log.debug(e.getMessage(), e);
 		}
+	}
 
+	@Test
+	public void testTextContentDuplicateBreakLinesBug1() {
+		try {
+			double dupThreshold = 30.0;
+			String title = "Normal Full Content";
+			String rawContent = io.fileToString("src/test/resources/unit_test_files/TextContent/Bug1.FullContent.txt");
+			TextContent cont = new TextContent(title, rawContent);
+			cont.getCleanContent(dupThreshold);
+			Assert.assertEquals(21, cont.getContentParagraphs().size());
+		}catch (Exception e) {
+			log.debug(e.getMessage(), e);
+		}
+	}
+
+	@Test
+	public void testTextContentDuplicateBreakLinesBug2() {
+		try {
+			double dupThreshold = 30.0;
+			String title = "Normal Full Content";
+			String rawContent = io.fileToString("src/test/resources/unit_test_files/TextContent/Bug2.FullContent.txt");
+			TextContent cont = new TextContent(title, rawContent);
+			cont.getCleanContent(dupThreshold);
+			Assert.assertEquals(22, cont.getContentParagraphs().size());
+		}catch (Exception e) {
+			log.debug(e.getMessage(), e);
+		}
 	}
 
 	@Test

@@ -3,6 +3,7 @@ package co.alonsos.java_utilities.lang;
 import java.util.ArrayList;
 import java.util.List;
 import org.apache.log4j.Logger;
+import co.alonsos.java_utilities.io.IO_Text;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -17,8 +18,10 @@ public class TextContent extends ContentParagraph{
 	private List<ContentParagraph> contentParagraphs;
 
 	public TextContent(String title, String rawContent) {
+		IO_Text txt = new IO_Text();
+		String regex = "(<\\/p>\\s*<\\/p>)(<\\/p>\\1)*";
 		this.title = title;
-		this.rawContent = rawContent;
+		this.rawContent = txt.rmDupCharsRegEx(rawContent, regex, newLine);
 		String[] paragraphs = this.rawContent.split(newLine);
 		if (paragraphs.length > 0) {
 			contentParagraphs = new ArrayList<ContentParagraph>();

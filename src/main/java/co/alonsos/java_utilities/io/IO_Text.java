@@ -3,6 +3,8 @@ package co.alonsos.java_utilities.io;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.StringTokenizer;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import org.apache.commons.text.similarity.LevenshteinDistance;
 import org.apache.log4j.Logger;
 import com.google.gson.Gson;
@@ -269,6 +271,15 @@ public class IO_Text {
 	public String rmDupCharsIt(String input, String strToRemove) {
 		while (input.contains(strToRemove.concat(strToRemove))) {
 			input = input.replaceAll(strToRemove.concat(strToRemove), strToRemove);
+		}
+		return input;
+	}
+
+	public String rmDupCharsRegEx(String input, String regex, String replacement) {
+		Pattern p = Pattern.compile(regex, Pattern.MULTILINE);
+		Matcher m = p.matcher(input);
+		while (m.find()) {
+			input = input.replaceAll(m.group(), replacement);
 		}
 		return input;
 	}
