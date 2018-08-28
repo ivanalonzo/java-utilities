@@ -258,4 +258,11 @@ public class IO_Text {
 		}
 		return input;
 	}
+
+	public String rmDupCharsIt(String input, String strToRemove) {
+		while (input.contains(strToRemove.concat(strToRemove))) {
+			input = input.replaceAll(strToRemove.concat(strToRemove), strToRemove);
+		}
+		return input;
+	}
 }
