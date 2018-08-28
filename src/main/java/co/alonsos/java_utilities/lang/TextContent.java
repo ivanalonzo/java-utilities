@@ -22,7 +22,7 @@ public class TextContent extends ContentParagraph{
 	public TextContent(String title, String rawContent) {
 		IO_Text txt = new IO_Text();
 		this.title = title;
-		this.rawContent = txt.rmDupChars(rawContent, newLine);
+		this.rawContent = txt.rmDupCharsIt(rawContent, newLine);
 		String[] paragraphs = this.rawContent.split(newLine);
 		if (paragraphs.length > 0) {
 			contentParagraphs = new ArrayList<ContentParagraph>();
