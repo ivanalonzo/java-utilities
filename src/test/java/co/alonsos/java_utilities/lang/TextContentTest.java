@@ -24,6 +24,25 @@ public class TextContentTest {
 	}
 
 	@Test
+	public void testTextContentDuplicateBreakLines() {
+		try {
+			String expected = io
+			        .fileToString("src/test/resources/unit_test_files/TextContent/Exp.NormalFullContent.txt");
+			double dupThreshold = 30.0;
+			String title = "Normal Full Content";
+			String rawContent = io
+			        .fileToString("src/test/resources/unit_test_files/TextContent/NormalFullContent.DupBreakLines.txt");
+			TextContent cont = new TextContent(title, rawContent);
+			String actual = cont.getCleanContent(dupThreshold);
+			Assert.assertEquals(3, cont.getContentParagraphs().size());
+			Assert.assertEquals(expected, actual);
+		}catch (Exception e) {
+			log.debug(e.getMessage(), e);
+		}
+
+	}
+
+	@Test
 	public void testTextContentRateDups() throws IOException {
 		double dupThreshold = 30.0;
 		String title = "Normal Full Content";

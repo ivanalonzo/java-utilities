@@ -386,4 +386,19 @@ public class IO_TextTest {
 		Assert.assertEquals(expected, actual);
 	}
 
+	@Test
+	public void testRmDuplicateChars() {
+		String input = "altercations.</p></p>The monument, supremacy.</p></p></p>Police have i, and it’sw stipulates.</p></p></p></p></p>Since Monday";
+		String expected = "altercations.</p>The monument, supremacy.</p>Police have i, and it’sw stipulates.</p>Since Monday";
+		String actual = text.rmDupChars(input, "</p>");
+		Assert.assertEquals(expected, actual);
+	}
+
+	@Test
+	public void testRmDuplicateCharsNoChr() {
+		String input = "altercations.</p></p>The monument, supremacy.</p></p></p>Police have i, and it’sw stipulates.</p></p></p></p></p>Since Monday";
+		String actual = text.rmDupChars(input, "</r>");
+		Assert.assertEquals(input, actual);
+	}
+
 }

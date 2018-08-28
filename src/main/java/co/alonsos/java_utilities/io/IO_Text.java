@@ -242,4 +242,20 @@ public class IO_Text {
 		return sim;
 
 	}
+
+	/**
+	 * uses recursion to look for the String to remove in an input of text.
+	 * It will keep looking until the input text no longer "contains" the duplication
+	 * 
+	 * @param input: Any input string
+	 * @param strToRemove: A single (non-duplicate) instance of the char sequence you are trying to
+	 *        de-duplicate
+	 * @return
+	 */
+	public String rmDupChars(String input, String strToRemove) {
+		if (input.contains(strToRemove.concat(strToRemove))) {
+			return rmDupChars(input.replaceAll(strToRemove.concat(strToRemove), strToRemove), strToRemove);
+		}
+		return input;
+	}
 }

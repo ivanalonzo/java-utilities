@@ -15,15 +15,15 @@ public class TextContent extends ContentParagraph{
 	private static Logger log = Logger.getLogger(TextContent.class);
 
 	private String newLine = "</p>";
-
 	private String title;
 	private String rawContent;
 	private List<ContentParagraph> contentParagraphs;
 
 	public TextContent(String title, String rawContent) {
+		IO_Text txt = new IO_Text();
 		this.title = title;
-		this.rawContent = rawContent;
-		String[] paragraphs = rawContent.split(newLine);
+		this.rawContent = txt.rmDupChars(rawContent, newLine);
+		String[] paragraphs = this.rawContent.split(newLine);
 		if (paragraphs.length > 0) {
 			contentParagraphs = new ArrayList<ContentParagraph>();
 			for (int i = 0; i < paragraphs.length; i++) {
