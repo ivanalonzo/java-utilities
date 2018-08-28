@@ -3,9 +3,6 @@ package co.alonsos.java_utilities.lang;
 import java.util.ArrayList;
 import java.util.List;
 import org.apache.log4j.Logger;
-import org.languagetool.JLanguageTool;
-import org.languagetool.language.AmericanEnglish;
-import co.alonsos.java_utilities.io.IO_Text;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -20,14 +17,15 @@ public class TextContent extends ContentParagraph{
 	private List<ContentParagraph> contentParagraphs;
 
 	public TextContent(String title, String rawContent) {
-		IO_Text txt = new IO_Text();
 		this.title = title;
-		this.rawContent = txt.rmDupCharsIt(rawContent, newLine);
+		this.rawContent = rawContent;
 		String[] paragraphs = this.rawContent.split(newLine);
 		if (paragraphs.length > 0) {
 			contentParagraphs = new ArrayList<ContentParagraph>();
 			for (int i = 0; i < paragraphs.length; i++) {
-				contentParagraphs.add(new ContentParagraph(paragraphs[i]));
+				if (paragraphs[i] != null && !paragraphs[i].isEmpty()) {
+					contentParagraphs.add(new ContentParagraph(paragraphs[i].trim()));
+				}
 			}
 		}
 		for (ContentParagraph para : contentParagraphs) {
@@ -41,8 +39,10 @@ public class TextContent extends ContentParagraph{
 			contentParagraphs = new ArrayList<ContentParagraph>();
 			rawContent = "";
 			for (int i = 0; i < sentences.length; i++) {
-				contentParagraphs.add(new ContentParagraph(sentences[i]));
-				rawContent += sentences[i] + newLine;
+				if (sentences[i] != null && !sentences[i].isEmpty()) {
+					contentParagraphs.add(new ContentParagraph(sentences[i]));
+					rawContent += sentences[i] + newLine;
+				}
 			}
 		}
 		for (ContentParagraph para : contentParagraphs) {
