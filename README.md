@@ -3,6 +3,7 @@ This is a library of various utilities ranging from Text manipulation, to HTTP h
 
 ## Features
 * Text Manipulation: 
+* HTTP Methods:
 
 ## Testing
 * All Tests: `mvn clean test`
