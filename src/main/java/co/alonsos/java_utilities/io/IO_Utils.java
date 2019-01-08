@@ -27,6 +27,19 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.log4j.Logger;
 
+/**
+ * The class provides basic IO utilities like:
+ * ** Returning a list of strings given a path
+ * ** Returning the contents of a filepath or stream as a string
+ * ** Confirming a file exists, is empty or executable
+ * ** Creating a file given a string input and a file path
+ * ** Unzipping a file
+ * ** Saving the output of a stream to a file
+ * ** Resizing an image
+ * 
+ * @author ivanalonso
+ *
+ */
 public class IO_Utils {
 
 	private static Logger log = Logger.getLogger(IO_Utils.class);
@@ -279,6 +292,18 @@ public class IO_Utils {
 		}
 	}
 
+	/**
+	 * Given the input path, it will resize the image to the target width as long as the target width
+	 * does not exceed the max ratio. The ratio is calculated by dividing the target width by the
+	 * current
+	 * width. If the calculated ratio is higher than the target width an error is returned
+	 * 
+	 * @param inputImagePath
+	 * @param outputImagePath
+	 * @param targetWidth
+	 * @param maxRatio
+	 * @throws Exception
+	 */
 	public void imageResize(String inputImagePath, String outputImagePath, int targetWidth, double maxRatio)
 	        throws Exception {
 		File inputFile = new File(inputImagePath);

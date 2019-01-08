@@ -7,6 +7,15 @@ import org.apache.http.NameValuePair;
 import org.apache.http.client.utils.URIBuilder;
 import org.apache.log4j.Logger;
 
+/**
+ * These are static methods which can be used when dealing with HTTP calls
+ * ** encodeURL will encode the string
+ * ** urlBuilder will create a proper URI
+ * **
+ * 
+ * @author ivanalonso
+ *
+ */
 public class HTTP_Helper {
 	private static Logger log = Logger.getLogger(HTTP_Helper.class);
 

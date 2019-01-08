@@ -33,6 +33,16 @@ import org.apache.http.util.EntityUtils;
 import org.apache.log4j.Logger;
 import co.alonsos.java_utilities.io.IO_Utils;
 
+/**
+ * HTTP Client library with various HTTP methods implemented for easy handling of untrusted
+ * connections
+ * ** execGet returns a closable HTTP response
+ * ** saveFile to temp allows you to save the return stream to a temporary file
+ * ** execPost returns a closable HTTP response
+ * 
+ * @author ivanalonso
+ *
+ */
 @SuppressWarnings("deprecation")
 public class HTTP_Methods {
 
@@ -202,7 +212,6 @@ public class HTTP_Methods {
 		httpclient.close();
 		return new AbstractMap.SimpleEntry<CloseableHttpResponse, String>(reply, tempFile.getAbsolutePath());
 	}
-	
 	
 	/**
 	 * Uses a Closeable HTTP Client to execute an HTTP POST Method

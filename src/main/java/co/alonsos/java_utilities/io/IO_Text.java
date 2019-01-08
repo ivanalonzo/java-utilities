@@ -11,7 +11,23 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import co.alonsos.java_utilities.Constants;
 
-
+/**
+ * Includes various methods for dealing with text. For example:
+ * ** Convert certain chars to HTML tags (like \n to `<br>
+ * `)
+ * ** Conversion of HTML tags to ASCII
+ * ** Basic clean up of text with embedded tabs or new lines
+ * ** Wordcount using string tokenizer
+ * ** String arrays to paragraph converter
+ * ** Appends text to a string with a double new line char at the end
+ * ** Global find a replace
+ * ** Hash table lookup for finding elements in a hash and returning their value
+ * ** Levenhstein average distance calculations
+ * ** Removal of duplicate strings using various algos; recursion, iteration and regex
+ * 
+ * @author ivanalonso
+ *
+ */
 public class IO_Text {
 	private static Logger log = Logger.getLogger(IO_Text.class);
 
@@ -225,6 +241,16 @@ public class IO_Text {
 		return sim.apply(input1.toLowerCase(), input2.toLowerCase());
 	}
 
+	/**
+	 * Used the levenshtein distance algo to determine the similarity of a
+	 * word but considers the size of the strings being evaluated to also
+	 * provide an average distance rather than simply returning the absolute
+	 * distance between the two inputs.
+	 *
+	 * @param input1
+	 * @param input2
+	 * @return
+	 */
 	public double similarAvgRate(String input1, String input2) {
 		if (input1 == null) {
 			input1 = "";
